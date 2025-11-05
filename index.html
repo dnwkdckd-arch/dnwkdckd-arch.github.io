@@ -25,9 +25,12 @@
       margin: 10px;
       position: relative;
     }
-    button:hover { background: #1e3a8a; transform: scale(1.05); }
+    button:hover { background: #1e3a8a; 
+    transform: scale(1.05); }
 
-    .screen { display: none; padding: 40px; animation: fadeIn 0.4s ease; }
+    .screen { display: none; 
+    padding: 40px; 
+    animation: fadeIn 0.4s ease; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -42,19 +45,29 @@
       background: linear-gradient(135deg, #3b82f6, #1e3a8a);
       color: white;
     }
-    #main-screen h1 { font-size: 3rem; margin-bottom: 40px; }
+    #main-screen h1 { 
+    font-size: 3rem; 
+    margin-bottom: 40px; }
 
     .main-buttons-container { margin-top: 15vh; }
 
-    #category-screen { background: #f8fafc; }
+    #category-screen { 
+    background: #f8fafc; 
+    }
     .category-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       max-width: 800px;
       margin: 30px auto;
     }
-    .category-grid button { background: #94a3b8; }
+       .category-grid button {
+      background: #94a3b8;
+      color: white;
+      width: 100%;
+      height: 60px;
+      font-size: 1rem;
+    }
     .category-grid button:hover { background: #475569; }
 
     .tooltip {
@@ -97,13 +110,20 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* 숫자야구 게임 */
     #game-screen h1 { color: #2563eb; }
     ul { list-style: none; padding: 0; max-width: 300px; margin: 20px auto; }
     li { margin: 8px 0; padding: 8px; background: #e2e8f0; border-radius: 8px; }
     .info { margin-top: 15px; font-weight: bold; }
+
+    /* 과자 게임 */
+    #snack-game img { max-width: 300px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 20px; }
+    .hidden { display: none; }
+    .small { font-size: 0.9rem; color:#334155; }
   </style>
 </head>
 <body>
+  <!-- 메인 화면 -->
   <div id="main-screen" class="screen" style="display: flex;">
     <h1>맞히기 게임</h1>
     <div class="main-buttons-container">
@@ -118,6 +138,7 @@
     </div>
   </div>
 
+  <!-- 카테고리 화면 -->
   <div id="category-screen" class="screen">
     <h2>카테고리를 선택하세요</h2>
     <div class="category-grid">
@@ -128,7 +149,7 @@
       <div class="tooltip-container"><button>경제·금융</button><span class="tooltip">환율, 주식, 세금, 통화</span></div>
       <div class="tooltip-container"><button>문화·예술·스포츠</button><span class="tooltip">미술, 음악, 문학, 영화, 연극, 디자인, 스포츠</span></div>
       <div class="tooltip-container"><button>IT·기술</button><span class="tooltip">컴퓨터, 스마트폰, 인터넷 용어, AI, 프로그래밍</span></div>
-      <div class="tooltip-container"><button>생활상식</button><span class="tooltip">건강, 음식, 안전, 소비, 교통, 매너, 재활용</span></div>
+      <div class="tooltip-container"><button id="snackBtn">생활상식</button><span class="tooltip">건강, 음식, 안전, 소비, 교통, 매너, 재활용</span></div>
       <div class="tooltip-container"><button>문학·철학·종교</button><span class="tooltip">고전 명언, 사상가, 성경·불경·신화</span></div>
       <div class="tooltip-container"><button>창의·두뇌퍼즐</button><span class="tooltip">수수께끼, IQ 문제, 패턴 추리</span></div>
       <div class="tooltip-container"><button>잡학</button><span class="tooltip">진짜 잡지식</span></div>
@@ -136,6 +157,24 @@
     <button id="backToMainBtn">⬅ 메인으로</button>
   </div>
 
+  <!-- 과자 이름 맞히기 화면 -->
+  <div id="snack-game" class="screen">
+    <h1>과자 이름 맞히기 🍪</h1>
+    <p class="small">가려진 이미지를 보고 과자 이름을 입력하세요.</p>
+    <img id="snackImage" src="" alt="문제 이미지">
+    <img id="answerImage" src="" alt="정답 이미지" class="hidden">
+    <div id="answerSection">
+      <input id="answerInput" type="text" placeholder="과자 이름 입력" />
+      <button id="snackCheckBtn">확인</button>
+    </div>
+    <p id="snackResult" class="info"></p>
+    <div style="margin-top:14px;">
+      <button id="nextSnackBtn" class="hidden">다음 문제 ▶</button>
+      <button id="backToCategoryBtn2">⬅ 카테고리로 돌아가기</button>
+    </div>
+  </div>
+
+  <!-- 숫자야구 게임 화면 -->
   <div id="game-screen" class="screen">
     <h1>4자리 숫자야구</h1>
     <p>서로 다른 숫자 4개를 맞혀보세요! (시도 횟수: 최대 6번)</p>
@@ -147,14 +186,17 @@
   </div>
 
   <script>
+    // 화면 전환
     function showScreen(id) {
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
+      document.getElementById(id).style.display = (id === "main-screen") ? "flex" : "block";
     }
 
     document.getElementById("categoryBtn").addEventListener("click", () => showScreen("category-screen"));
     document.getElementById("backToMainBtn").addEventListener("click", () => showScreen("main-screen"));
     document.getElementById("classicBtn").addEventListener("click", () => alert("클래식 모드는 준비 중입니다! 🚧"));
+
+    // 숫자야구 시작
     document.getElementById("mathLogicBtn").addEventListener("click", () => {
       showScreen("game-screen");
       startGame();
@@ -223,6 +265,81 @@
 
       document.getElementById('userInput').value = "";
     }
+
+    // ------------------------------
+    // 과자 이름 맞히기 게임
+    // ------------------------------
+    const snackData = [
+      { q: "images/ChocoSongi_q.JPG", a: "초코송이", reveal: "images/ChocoSongi_a.JPG" },
+      { q: "images/pocachip_q.jpg", a: "포카칩오리지널", reveal: "images/pocachip_a.jpg" },
+      { q: "images/PotetochipOriginal_q.jpg", a: "포테토칩오리지널", reveal: "images/PotetochipOriginal_a.jpg" },
+      { q: "images/JjolbyeongMaekomhanMat_q.jpg", a: "쫄병매콤한맛", reveal: "images/JjolbyeongMaekomhanMat_a.jpg" }
+    ];
+
+    let snackProblems = [];
+    let currentSnack = 0;
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    document.getElementById("snackBtn").addEventListener("click", () => {
+      snackProblems = shuffleArray(snackData.slice());
+      currentSnack = 0;
+      showScreen("snack-game");
+      loadSnack();
+    });
+
+    function loadSnack() {
+      const p = snackProblems[currentSnack];
+      document.getElementById("snackImage").src = p.q;
+      document.getElementById("answerImage").classList.add("hidden");
+      document.getElementById("snackResult").textContent = "";
+      document.getElementById("answerInput").value = "";
+      document.getElementById("nextSnackBtn").classList.add("hidden");
+      document.getElementById("answerSection").style.display = "block";
+      document.getElementById("answerInput").focus();
+      document.getElementById("snackImage").classList.remove("hidden");
+    }
+
+    function checkAnswer() {
+      const p = snackProblems[currentSnack];
+      const userInput = document.getElementById("answerInput").value.trim();
+      const result = document.getElementById("snackResult");
+
+      if (!userInput) return alert("정답을 입력해주세요!");
+      const normalize = s => s.replace(/\s/g, "").toLowerCase();
+
+      if (normalize(userInput) === normalize(p.a)) {
+        result.textContent = "✅ 맞았습니다!";
+        result.style.color = "#16a34a";
+      } else {
+        result.textContent = `❌ 틀렸습니다! (정답: ${p.a})`;
+        result.style.color = "#dc2626";
+      }
+
+      document.getElementById("snackImage").classList.add("hidden");
+      document.getElementById("answerImage").src = p.reveal;
+      document.getElementById("answerImage").classList.remove("hidden");
+
+      document.getElementById("answerSection").style.display = "none";
+      document.getElementById("nextSnackBtn").classList.remove("hidden");
+    }
+
+    document.getElementById("snackCheckBtn").addEventListener("click", checkAnswer);
+    document.getElementById("answerInput").addEventListener("keydown", e => { if (e.key === "Enter") checkAnswer(); });
+    document.getElementById("nextSnackBtn").addEventListener("click", () => {
+      currentSnack++;
+      if (currentSnack >= snackProblems.length) {
+        alert("모든 문제를 풀었습니다! 🎉");
+        showScreen("category-screen");
+      } else { loadSnack(); }
+    });
+    document.getElementById("backToCategoryBtn2").addEventListener("click", () => showScreen("category-screen"));
 
     showScreen("main-screen");
   </script>
