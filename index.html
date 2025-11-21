@@ -5,136 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>맞히기 게임</title>
   <style>
-    body {
-      font-family: "Pretendard", sans-serif;
-      text-align: center;
-      margin: 0;
-      background: #f1f5f9;
-      color: #1e293b;
-    }
-
-    button {
-      padding: 12px 25px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      background: #2563eb;
-      color: white;
-      margin: 10px;
-      position: relative;
-    }
-    button:hover { background: #1e3a8a; 
-    transform: scale(1.05); }
-
-    .screen { display: none; 
-    padding: 40px; 
-    animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    #main-screen {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
-      color: white;
-    }
-    #main-screen h1 { 
-    font-size: 3rem; 
-    margin-bottom: 40px; }
-
-    .main-buttons-container { margin-top: 15vh; }
-
-    #category-screen { 
-    background: #f8fafc; 
-    }
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      max-width: 800px;
-      margin: 30px auto;
-    }
-       .category-grid button {
-      background: #94a3b8;
-      color: white;
-      width: 100%;
-      height: 60px;
-      font-size: 1rem;
-    }
-    .category-grid button:hover { background: #475569; }
-
-    .tooltip {
-      visibility: hidden;
-      opacity: 0;
-      background: rgba(0, 0, 0, 0.85);
-      color: white;
-      text-align: center;
-      border-radius: 8px;
-      padding: 10px 14px;
-      position: absolute;
-      top: -70px;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      width: max-content;
-      max-width: 340px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      z-index: 10;
-      pointer-events: none;
-    }
-    .tooltip::after {
-      content: "";
-      position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 6px;
-      border-style: solid;
-      border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
-    }
-    .tooltip-container {
-      display: inline-block;
-      position: relative;
-    }
-    .tooltip-container:hover .tooltip {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    body { font-family: "Pretendard", sans-serif; text-align:center; margin:0; background:#f1f5f9; color:#1e293b; }
+    button { padding:12px 25px; font-size:1.1rem; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease; background:#2563eb; color:white; margin:10px; position:relative; }
+    button:hover { background:#1e3a8a; transform:scale(1.05); }
+    .screen { display:none; padding:40px; animation:fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    #main-screen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:linear-gradient(135deg, #3b82f6, #1e3a8a); color:white; }
+    #main-screen h1 { font-size:3rem; margin-bottom:40px; }
+    .main-buttons-container { margin-top:15vh; }
+    #category-screen { background:#f8fafc; }
+    .category-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; max-width:800px; margin:30px auto; }
+    .category-grid button { background:#94a3b8; color:white; width:100%; height:60px; font-size:1rem; }
+    .category-grid button:hover { background:#475569; }
+    .tooltip { visibility:hidden; opacity:0; background:rgba(0,0,0,0.85); color:white; text-align:center; border-radius:8px; padding:10px 14px; position:absolute; top:-70px; left:50%; transform:translateX(-50%) translateY(10px); transition:opacity 0.3s ease, transform 0.3s ease; width:max-content; max-width:340px; font-size:0.9rem; line-height:1.5; z-index:10; pointer-events:none; }
+    .tooltip::after { content:""; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); border-width:6px; border-style:solid; border-color:rgba(0,0,0,0.85) transparent transparent transparent; }
+    .tooltip-container { display:inline-block; position:relative; }
+    .tooltip-container:hover .tooltip { visibility:visible; opacity:1; transform:translateX(-50%) translateY(0); }
 
     /* 숫자야구 게임 */
-    #game-screen h1 { color: #2563eb; }
-    ul { list-style: none; padding: 0; max-width: 300px; margin: 20px auto; }
-    li { margin: 8px 0; padding: 8px; background: #e2e8f0; border-radius: 8px; }
-    .info { margin-top: 15px; font-weight: bold; }
+    #game-screen h1 { color:#2563eb; }
+    ul { list-style:none; padding:0; max-width:300px; margin:20px auto; }
+    li { margin:8px 0; padding:8px; background:#e2e8f0; border-radius:8px; }
+    .info { margin-top:15px; font-weight:bold; }
 
     /* 과자 게임 */
-    #snack-game img { max-width: 300px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); margin-bottom: 20px; }
-    .hidden { display: none; }
-    .small { font-size: 0.9rem; color:#334155; }
+    #snack-game img { max-width:300px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px; }
+    .hidden { display:none; }
+    .small { font-size:0.9rem; color:#334155; }
+
+    /* 폰트 맞히기 */
+    #font-game span { cursor:pointer; display:inline-block; margin:0 5px; font-size:2rem; user-select:none; }
+    #font-game .helvetica { font-family:"Helvetica", sans-serif; }
+    #font-game .other { font-family:"Arial", sans-serif; }
   </style>
 </head>
 <body>
   <!-- 메인 화면 -->
-  <div id="main-screen" class="screen" style="display: flex;">
+  <div id="main-screen" class="screen" style="display:flex;">
     <h1>맞히기 게임</h1>
     <div class="main-buttons-container">
-      <div class="tooltip-container">
-        <button id="categoryBtn">카테고리</button>
-        <span class="tooltip">언어·수학·논리 등의 문제 유형을 골라서 진행할 수 있습니다</span>
-      </div>
-      <div class="tooltip-container">
-        <button id="classicBtn">클래식</button>
-        <span class="tooltip">여러 가지 카테고리가 섞인 방식으로 틀릴 때까지 진행됩니다</span>
-      </div>
+      <div class="tooltip-container"><button id="categoryBtn">카테고리</button><span class="tooltip">언어·수학·논리 등의 문제 유형을 골라서 진행할 수 있습니다</span></div>
+      <div class="tooltip-container"><button id="classicBtn">클래식</button><span class="tooltip">여러 가지 카테고리가 섞인 방식으로 틀릴 때까지 진행됩니다</span></div>
     </div>
   </div>
 
@@ -151,15 +62,24 @@
       <div class="tooltip-container"><button>IT·기술</button><span class="tooltip">컴퓨터, 스마트폰, 인터넷 용어, AI, 프로그래밍</span></div>
       <div class="tooltip-container"><button id="snackBtn">생활상식</button><span class="tooltip">건강, 음식, 안전, 소비, 교통, 매너, 재활용</span></div>
       <div class="tooltip-container"><button>문학·철학·종교</button><span class="tooltip">고전 명언, 사상가, 성경·불경·신화</span></div>
-      <div class="tooltip-container"><button>창의·두뇌퍼즐</button><span class="tooltip">수수께끼, IQ 문제, 패턴 추리</span></div>
+      <div class="tooltip-container"><button id="fontBtn">창의·두뇌퍼즐</button><span class="tooltip">수수께끼, IQ 문제, 패턴 추리, 폰트 맞히기</span></div>
       <div class="tooltip-container"><button>잡학</button><span class="tooltip">진짜 잡지식</span></div>
     </div>
     <button id="backToMainBtn">⬅ 메인으로</button>
   </div>
 
+  <!-- 폰트 맞히기 화면 -->
+  <div id="font-game" class="screen">
+    <h1>폰트 맞히기</h1>
+    <p id="fontGuessResult" class="info">검정색 글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!</p>
+    <div id="lettersContainer"></div>
+    <button id="fontCheckBtn">정답 확인</button>
+    <button id="backToCategoryBtnFont">⬅ 카테고리로 돌아가기</button>
+  </div>
+
   <!-- 과자 이름 맞히기 화면 -->
   <div id="snack-game" class="screen">
-    <h1>과자 이름 맞히기 🍪</h1>
+    <h1>과자 이름 맞히기 </h1>
     <p class="small">가려진 이미지를 보고 과자 이름을 입력하세요.</p>
     <img id="snackImage" src="" alt="문제 이미지">
     <img id="answerImage" src="" alt="정답 이미지" class="hidden">
@@ -186,163 +106,96 @@
   </div>
 
   <script>
-    // 화면 전환
     function showScreen(id) {
       document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = (id === "main-screen") ? "flex" : "block";
+      document.getElementById(id).style.display = (id==="main-screen")?"flex":"block";
     }
 
-    document.getElementById("categoryBtn").addEventListener("click", () => showScreen("category-screen"));
-    document.getElementById("backToMainBtn").addEventListener("click", () => showScreen("main-screen"));
-    document.getElementById("classicBtn").addEventListener("click", () => alert("클래식 모드는 준비 중입니다! 🚧"));
+    document.getElementById("categoryBtn").addEventListener("click",()=>showScreen("category-screen"));
+    document.getElementById("backToMainBtn").addEventListener("click",()=>showScreen("main-screen"));
+    document.getElementById("classicBtn").addEventListener("click",()=>alert("클래식 모드는 준비 중입니다! 🚧"));
+    document.getElementById("backToCategoryBtnFont").addEventListener("click",()=>showScreen("category-screen"));
 
-    // 숫자야구 시작
-    document.getElementById("mathLogicBtn").addEventListener("click", () => {
-      showScreen("game-screen");
-      startGame();
+    // 폰트 맞히기
+    const fontBtn = document.getElementById("fontBtn");
+    fontBtn.addEventListener("click", ()=>{
+      showScreen("font-game");
+      startFontGame();
     });
-    document.getElementById("backToCategoryBtn").addEventListener("click", () => showScreen("category-screen"));
-    document.getElementById("checkBtn").addEventListener("click", play);
 
-    let answer = [];
-    let tries = 0;
-    const maxTries = 6;
+    let fontCorrectIndex=null;
+    let fontSelectedIndex=null;
+    let fontChecked=false;
 
-    function startGame() {
-      answer = [];
-      tries = 0;
-      document.getElementById('triesInfo').textContent = `현재 시도: 0 / ${maxTries}`;
-      document.getElementById('log').innerHTML = "";
-      document.getElementById('userInput').value = "";
+    function startFontGame(){
+      const lettersContainer = document.getElementById("lettersContainer");
+      lettersContainer.innerHTML="";
+      fontCorrectIndex = Math.floor(Math.random()*12);
+      fontSelectedIndex=null;
+      fontChecked=false;
 
-      while (answer.length < 4) {
-        const num = Math.floor(Math.random() * 10);
-        if (!answer.includes(num)) answer.push(num);
+      for(let i=0;i<12;i++){
+        const span=document.createElement("span");
+        span.textContent=String.fromCharCode(65+i);
+        span.className=(i===fontCorrectIndex)?"helvetica":"other";
+        span.dataset.index=i;
+        span.style.textDecoration="none";
+        span.addEventListener("click", ()=>{
+          if(fontChecked) return;
+          if(fontSelectedIndex!==null) lettersContainer.children[fontSelectedIndex].style.textDecoration="none";
+          span.style.textDecoration="underline";
+          fontSelectedIndex=i;
+        });
+        lettersContainer.appendChild(span);
       }
-      console.log("정답:", answer.join(''));
+      document.getElementById("fontGuessResult").textContent="검정색 글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!";
+      document.getElementById("fontGuessResult").style.color="#1e293b";
     }
 
-    function play() {
-      const input = document.getElementById('userInput').value.trim();
-      const log = document.getElementById('log');
-      const info = document.getElementById('triesInfo');
-
-      if (input.length !== 4 || new Set(input).size !== 4 || isNaN(input)) {
-        alert("서로 다른 숫자 4개를 입력해주세요!");
-        return;
+    document.getElementById("fontCheckBtn").addEventListener("click",()=>{
+      if(fontChecked) return;
+      fontChecked=true;
+      const lettersContainer=document.getElementById("lettersContainer");
+      for(let i=0;i<lettersContainer.children.length;i++){
+        lettersContainer.children[i].style.pointerEvents="none";
       }
 
-      tries++;
-      info.textContent = `현재 시도: ${tries} / ${maxTries}`;
-
-      const guess = input.split('').map(Number);
-      let strike = 0, ball = 0;
-
-      for (let i = 0; i < 4; i++) {
-        if (guess[i] === answer[i]) strike++;
-        else if (answer.includes(guess[i])) ball++;
+      const result=document.getElementById("fontGuessResult");
+      if(fontSelectedIndex===fontCorrectIndex){
+        result.textContent="모두 맞혔습니다!";
+        result.style.color="#16a34a";
+      }else{
+        result.textContent=`틀렸습니다! Helvetica 글자는 "${lettersContainer.children[fontCorrectIndex].textContent}"입니다.`;
+        result.style.color="#dc2626";
+        lettersContainer.children[fontCorrectIndex].style.textDecoration="underline";
       }
+    });
 
-      const result = `${input} → ${strike}S ${ball}B`;
-      const li = document.createElement('li');
-      li.textContent = result;
-      log.prepend(li);
-
-      if (strike === 4) {
-        setTimeout(() => {
-          alert(`정답입니다! (${tries}번 만에 맞히셨습니다!)`);
-          showScreen("category-screen");
-        }, 100);
-        return;
-      }
-
-      if (tries >= maxTries) {
-        setTimeout(() => {
-          alert(`실패! 정답은 ${answer.join('')} 입니다.`);
-          showScreen("category-screen");
-        }, 100);
-      }
-
-      document.getElementById('userInput').value = "";
-    }
-
-    // ------------------------------
-    // 과자 이름 맞히기 게임
-    // ------------------------------
-    const snackData = [
-      { q: "images/ChocoSongi_q.JPG", a: "초코송이", reveal: "images/ChocoSongi_a.JPG" },
-      { q: "images/pocachip_q.JPG", a: "포카칩오리지널", reveal: "images/pocachip_a.JPG" },
-      { q: "images/PotetochipOriginal_q.JPG", a: "포테토칩오리지널", reveal: "images/PotetochipOriginal_a.JPG" },
-      { q: "images/JjolbyeongMaekomhanMat_q.JPG", a: "쫄병매콤한맛", reveal: "images/JjolbyeongMaekomhanMat_a.JPG" }
+    const snackData=[
+      { q:"images/ChocoSongi_q.JPG",a:"초코송이",reveal:"images/ChocoSongi_a.JPG" },
+      { q:"images/pocachip_q.JPG",a:"포카칩오리지널",reveal:"images/pocachip_a.JPG" },
+      { q:"images/PotetochipOriginal_q.JPG",a:"포테토칩오리지널",reveal:"images/PotetochipOriginal_a.JPG" },
+      { q:"images/JjolbyeongMaekomhanMat_q.JPG",a:"쫄병매콤한맛",reveal:"images/JjolbyeongMaekomhanMat_a.JPG" }
     ];
+    let snackProblems=[];
+    let currentSnack=0;
+    function shuffleArray(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+    document.getElementById("snackBtn").addEventListener("click",()=>{snackProblems=shuffleArray(snackData.slice());currentSnack=0;showScreen("snack-game");loadSnack();});
+    function loadSnack(){const p=snackProblems[currentSnack];document.getElementById("snackImage").src=p.q;document.getElementById("answerImage").classList.add("hidden");document.getElementById("snackResult").textContent="";document.getElementById("answerInput").value="";document.getElementById("nextSnackBtn").classList.add("hidden");document.getElementById("answerSection").style.display="block";document.getElementById("answerInput").focus();document.getElementById("snackImage").classList.remove("hidden");}
+    function checkAnswer(){const p=snackProblems[currentSnack];const userInput=document.getElementById("answerInput").value.trim();const result=document.getElementById("snackResult");if(!userInput)return alert("정답을 입력해주세요!");const normalize=s=>s.replace(/\s/g,"").toLowerCase();if(normalize(userInput)===normalize(p.a)){result.textContent="✅ 맞았습니다!";result.style.color="#16a34a";}else{result.textContent=`❌ 틀렸습니다! (정답: ${p.a})`;result.style.color="#dc2626";}document.getElementById("snackImage").classList.add("hidden");document.getElementById("answerImage").src=p.reveal;document.getElementById("answerImage").classList.remove("hidden");document.getElementById("answerSection").style.display="none";document.getElementById("nextSnackBtn").classList.remove("hidden");}
+    document.getElementById("snackCheckBtn").addEventListener("click",checkAnswer);
+    document.getElementById("answerInput").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer();});
+    document.getElementById("nextSnackBtn").addEventListener("click",()=>{currentSnack++;if(currentSnack>=snackProblems.length){alert("모든 문제를 풀었습니다! 🎉");showScreen("category-screen");}else{loadSnack();}});
+    document.getElementById("backToCategoryBtn2").addEventListener("click",()=>showScreen("category-screen"));
 
-    let snackProblems = [];
-    let currentSnack = 0;
-
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    document.getElementById("snackBtn").addEventListener("click", () => {
-      snackProblems = shuffleArray(snackData.slice());
-      currentSnack = 0;
-      showScreen("snack-game");
-      loadSnack();
-    });
-
-    function loadSnack() {
-      const p = snackProblems[currentSnack];
-      document.getElementById("snackImage").src = p.q;
-      document.getElementById("answerImage").classList.add("hidden");
-      document.getElementById("snackResult").textContent = "";
-      document.getElementById("answerInput").value = "";
-      document.getElementById("nextSnackBtn").classList.add("hidden");
-      document.getElementById("answerSection").style.display = "block";
-      document.getElementById("answerInput").focus();
-      document.getElementById("snackImage").classList.remove("hidden");
-    }
-
-    function checkAnswer() {
-      const p = snackProblems[currentSnack];
-      const userInput = document.getElementById("answerInput").value.trim();
-      const result = document.getElementById("snackResult");
-
-      if (!userInput) return alert("정답을 입력해주세요!");
-      const normalize = s => s.replace(/\s/g, "").toLowerCase();
-
-      if (normalize(userInput) === normalize(p.a)) {
-        result.textContent = "✅ 맞았습니다!";
-        result.style.color = "#16a34a";
-      } else {
-        result.textContent = `❌ 틀렸습니다! (정답: ${p.a})`;
-        result.style.color = "#dc2626";
-      }
-
-      document.getElementById("snackImage").classList.add("hidden");
-      document.getElementById("answerImage").src = p.reveal;
-      document.getElementById("answerImage").classList.remove("hidden");
-
-      document.getElementById("answerSection").style.display = "none";
-      document.getElementById("nextSnackBtn").classList.remove("hidden");
-    }
-
-    document.getElementById("snackCheckBtn").addEventListener("click", checkAnswer);
-    document.getElementById("answerInput").addEventListener("keydown", e => { if (e.key === "Enter") checkAnswer(); });
-    document.getElementById("nextSnackBtn").addEventListener("click", () => {
-      currentSnack++;
-      if (currentSnack >= snackProblems.length) {
-        alert("모든 문제를 풀었습니다! 🎉");
-        showScreen("category-screen");
-      } else { loadSnack(); }
-    });
-    document.getElementById("backToCategoryBtn2").addEventListener("click", () => showScreen("category-screen"));
+    let answer=[];let tries=0;const maxTries=6;
+    document.getElementById("mathLogicBtn").addEventListener("click",()=>{showScreen("game-screen");startGame();});
+    document.getElementById("backToCategoryBtn").addEventListener("click",()=>showScreen("category-screen"));
+    document.getElementById("checkBtn").addEventListener("click",play);
+    function startGame(){answer=[];tries=0;document.getElementById('triesInfo').textContent=`현재 시도: 0 / ${maxTries}`;document.getElementById('log').innerHTML="";document.getElementById('userInput').value="";while(answer.length<4){const num=Math.floor(Math.random()*10);if(!answer.includes(num))answer.push(num);}console.log("정답:",answer.join(''));}
+    function play(){const input=document.getElementById('userInput').value.trim();const log=document.getElementById('log');const info=document.getElementById('triesInfo');if(input.length!==4||new Set(input).size!==4||isNaN(input)){alert("서로 다른 숫자 4개를 입력해주세요!");return;}tries++;info.textContent=`현재 시도: ${tries} / ${maxTries}`;const guess=input.split('').map(Number);let strike=0,ball=0;for(let i=0;i<4;i++){if(guess[i]===answer[i])strike++;else if(answer.includes(guess[i]))ball++;}const result=`${input} → ${strike}S ${ball}B`;const li=document.createElement('li');li.textContent=result;log.prepend(li);if(strike===4){setTimeout(()=>{alert(`정답입니다! (${tries}번 만에 맞히셨습니다!)`);showScreen("category-screen");},100);return;}if(tries>=maxTries){setTimeout(()=>{alert(`실패! 정답은 ${answer.join('')} 입니다.`);showScreen("category-screen");},100);}document.getElementById('userInput').value="";}
 
     showScreen("main-screen");
   </script>
 </body>
 </html>
-
