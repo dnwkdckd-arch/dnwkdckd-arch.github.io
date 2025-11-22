@@ -29,7 +29,7 @@
     .info { margin-top:15px; font-weight:bold; }
 
     /* 과자 게임 */
-    #snack-game img { max-width:300px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px; }
+    #snack-game img, #animal-game img { max-width:300px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px; }
     .hidden { display:none; }
     .small { font-size:0.9rem; color:#334155; }
 
@@ -55,7 +55,7 @@
     <div class="category-grid">
       <div class="tooltip-container"><button>언어</button><span class="tooltip">맞춤법, 속담, 사자성어, 어원</span></div>
       <div class="tooltip-container"><button id="mathLogicBtn">수학·논리</button><span class="tooltip">계산, 확률, 도형, 논리 퀴즈, 수열</span></div>
-      <div class="tooltip-container"><button>과학</button><span class="tooltip">물리, 화학, 생물, 지구과학, 우주, 환경, 실험</span></div>
+      <div class="tooltip-container"><button id="scienceBtn">과학</button><span class="tooltip">동물, 식물, 생물학, 지구과학</span></div>
       <div class="tooltip-container"><button>사회·정치·법</button><span class="tooltip">정부 구조, 헌법, 사회 제도</span></div>
       <div class="tooltip-container"><button>경제·금융</button><span class="tooltip">환율, 주식, 세금, 통화</span></div>
       <div class="tooltip-container"><button>문화·예술·스포츠</button><span class="tooltip">미술, 음악, 문학, 영화, 연극, 디자인, 스포츠</span></div>
@@ -71,7 +71,7 @@
   <!-- 폰트 맞히기 화면 -->
   <div id="font-game" class="screen">
     <h1>폰트 맞히기</h1>
-    <p id="fontGuessResult" class="info">검정색 글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!</p>
+    <p id="fontGuessResult" class="info">글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!</p>
     <div id="lettersContainer"></div>
     <button id="fontCheckBtn">정답 확인</button>
     <button id="backToCategoryBtnFont">⬅ 카테고리로 돌아가기</button>
@@ -94,6 +94,23 @@
     </div>
   </div>
 
+  <!-- 동물 맞히기 화면 -->
+  <div id="animal-game" class="screen">
+    <h1>동물 맞히기</h1>
+    <p class="small">가려진 이미지를 보고 동물 이름 혹은 종속과목강문계를 입력하세요.</p>
+    <img id="animalImage" src="" alt="문제 이미지">
+    <img id="animalAnswerImage" src="" alt="정답 이미지" class="hidden">
+    <div id="animalAnswerSection">
+      <input id="animalAnswerInput" type="text" placeholder="입력" />
+      <button id="animalCheckBtn">확인</button>
+    </div>
+    <p id="animalResult" class="info"></p>
+    <div style="margin-top:14px;">
+      <button id="nextAnimalBtn" class="hidden">다음 문제 ▶</button>
+      <button id="backToCategoryBtnAnimal">⬅ 카테고리로 돌아가기</button>
+    </div>
+  </div>
+
   <!-- 숫자야구 게임 화면 -->
   <div id="game-screen" class="screen">
     <h1>4자리 숫자야구</h1>
@@ -113,7 +130,7 @@
 
     document.getElementById("categoryBtn").addEventListener("click",()=>showScreen("category-screen"));
     document.getElementById("backToMainBtn").addEventListener("click",()=>showScreen("main-screen"));
-    document.getElementById("classicBtn").addEventListener("click",()=>alert("클래식 모드는 준비 중입니다! 🚧"));
+    document.getElementById("classicBtn").addEventListener("click",()=>alert("클래식 모드는 준비 중입니다!"));
     document.getElementById("backToCategoryBtnFont").addEventListener("click",()=>showScreen("category-screen"));
 
     // 폰트 맞히기
@@ -148,7 +165,7 @@
         });
         lettersContainer.appendChild(span);
       }
-      document.getElementById("fontGuessResult").textContent="검정색 글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!";
+      document.getElementById("fontGuessResult").textContent="글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!";
       document.getElementById("fontGuessResult").style.color="#1e293b";
     }
 
@@ -171,6 +188,7 @@
       }
     });
 
+    // 과자 맞히기
     const snackData=[
       { q:"images/ChocoSongi_q.JPG",a:"초코송이",reveal:"images/ChocoSongi_a.JPG" },
       { q:"images/pocachip_q.JPG",a:"포카칩오리지널",reveal:"images/pocachip_a.JPG" },
@@ -188,13 +206,207 @@
     document.getElementById("nextSnackBtn").addEventListener("click",()=>{currentSnack++;if(currentSnack>=snackProblems.length){alert("모든 문제를 풀었습니다! 🎉");showScreen("category-screen");}else{loadSnack();}});
     document.getElementById("backToCategoryBtn2").addEventListener("click",()=>showScreen("category-screen"));
 
-    let answer=[];let tries=0;const maxTries=6;
-    document.getElementById("mathLogicBtn").addEventListener("click",()=>{showScreen("game-screen");startGame();});
-    document.getElementById("backToCategoryBtn").addEventListener("click",()=>showScreen("category-screen"));
-    document.getElementById("checkBtn").addEventListener("click",play);
-    function startGame(){answer=[];tries=0;document.getElementById('triesInfo').textContent=`현재 시도: 0 / ${maxTries}`;document.getElementById('log').innerHTML="";document.getElementById('userInput').value="";while(answer.length<4){const num=Math.floor(Math.random()*10);if(!answer.includes(num))answer.push(num);}console.log("정답:",answer.join(''));}
-    function play(){const input=document.getElementById('userInput').value.trim();const log=document.getElementById('log');const info=document.getElementById('triesInfo');if(input.length!==4||new Set(input).size!==4||isNaN(input)){alert("서로 다른 숫자 4개를 입력해주세요!");return;}tries++;info.textContent=`현재 시도: ${tries} / ${maxTries}`;const guess=input.split('').map(Number);let strike=0,ball=0;for(let i=0;i<4;i++){if(guess[i]===answer[i])strike++;else if(answer.includes(guess[i]))ball++;}const result=`${input} → ${strike}S ${ball}B`;const li=document.createElement('li');li.textContent=result;log.prepend(li);if(strike===4){setTimeout(()=>{alert(`정답입니다! (${tries}번 만에 맞히셨습니다!)`);showScreen("category-screen");},100);return;}if(tries>=maxTries){setTimeout(()=>{alert(`실패! 정답은 ${answer.join('')} 입니다.`);showScreen("category-screen");},100);}document.getElementById('userInput').value="";}
+    // 동물 맞히기 데이터
+    const animalData=[
+      { q:"images/anim/acau_q.JPG", a:"악어거북", reveal:"images/anim/acau_a.JPG" },
+      { q:"images/anim/adeli_q.JPG", a:"아델리펭귄", reveal:"images/anim/adeli_a.JPG" },
+      { q:"images/anim/agi_q.JPG", a:"애기웜뱃", reveal:"images/anim/agi_a.JPG" },
+      { q:"images/anim/ahob_q.JPG", a:"아홉띠아르마딜로", reveal:"images/anim/ahob_a.JPG" },
+      { q:"images/anim/alac_q.JPG", a:"알락꼬리고양이", reveal:"images/anim/alac_a.JPG" },
+      { q:"images/anim/andes_q.JPG", a:"아메리카검은댕기해오라기", reveal:"images/anim/andes_a.JPG" },
+      { q:"images/anim/angkarana_q.JPG", a:"안데스산고양이", reveal:"images/anim/angkarana_a.JPG" },
+      { q:"images/anim/angung_q.JPG", a:"앙카라나족제비여우원숭이", reveal:"images/anim/angung_a.JPG" },
+      { q:"images/anim/bacg_q.JPG", a:"남방안경영원", reveal:"images/anim/bacg_a.JPG" },
+      { q:"images/anim/bacge_q.JPG", a:"박쥐귀여우", reveal:"images/anim/bacge_a.JPG" },
+      { q:"images/anim/bachu_q.JPG", a:"배추흰나비", reveal:"images/anim/bachu_a.JPG" },
+      { q:"images/anim/bau_q.JPG", a:"노랑반점바위너구리", reveal:"images/anim/bau_a.JPG" },
+      { q:"images/anim/bonith_q.JPG", a:"보닛헤드귀상어", reveal:"images/anim/bonith_a.JPG" },
+      { q:"images/anim/buchi_q.JPG", a:"자메이카벌잡이부치새", reveal:"images/anim/buchi_a.JPG" },
+      { q:"images/anim/bulgam_q.JPG", a:"벌감펭", reveal:"images/anim/bulgam_a.JPG" },
+      { q:"images/anim/bulgend_q.JPG", a:"붉은다리개구리", reveal:"images/anim/bulgend_a.JPG" },
+      { q:"images/anim/burij_q.JPG", a:"노랑부리저어새", reveal:"images/anim/burij_a.JPG" },
+      { q:"images/anim/cano_q.JPG", a:"카노두더지", reveal:"images/anim/cano_a.JPG" },
+      { q:"images/anim/carive_q.JPG", a:"카리브암초꼴뚜기", reveal:"images/anim/carive_a.JPG" },
+      { q:"images/anim/casp_q.JPG", a:"카스피채찍뱀", reveal:"images/anim/casp_a.JPG" },
+      { q:"images/anim/cham_q.JPG", a:"참게", reveal:"images/anim/cham_a.JPG" },
+      { q:"images/anim/chamm_q.JPG", a:"참문어", reveal:"images/anim/chamm_a.JPG" },
+      { q:"images/anim/chorug_q.JPG", a:"초록나무비단뱀", reveal:"images/anim/chorug_a.JPG" },
+      { q:"images/anim/codcod_q.JPG", a:"코드코드", reveal:"images/anim/codcod_a.JPG" },
+      { q:"images/anim/cuten_q.JPG", a:"커튼원양해파리", reveal:"images/anim/cuten_a.JPG" },
+      { q:"images/anim/ddangdoa_q.JPG", a:"땅돼지", reveal:"images/anim/ddangdoa_a.JPG" },
+      { q:"images/anim/dongsu_q.JPG", a:"동수구리", reveal:"images/anim/dongsu_a.JPG" },
+      { q:"images/anim/dotom_q.JPG", a:"도톰꼬리도마뱀붙이", reveal:"images/anim/dotom_a.JPG" },
+      { q:"images/anim/dotori_q.JPG", a:"도토리귀고둥", reveal:"images/anim/dotori_a.JPG" },
+      { q:"images/anim/dumbul_q.JPG", a:"덤불해오라기", reveal:"images/anim/dumbul_a.JPG" },
+      { q:"images/anim/g_q.JPG", a:"사향쥐캥거루", reveal:"images/anim/g_a.JPG" },
+      { q:"images/anim/gabir_q.JPG", a:"가비알", reveal:"images/anim/gabir_a.JPG" },
+      { q:"images/anim/galsacu_q.JPG", a:"갈색얼거니새", reveal:"images/anim/galsacu_a.JPG" },
+      { q:"images/anim/gami_q.JPG", a:"주머니개미핥기", reveal:"images/anim/gami_a.JPG" },
+      { q:"images/anim/garo_q.JPG", a:"가로줄무늬자칼", reveal:"images/anim/garo_a.JPG" },
+      { q:"images/anim/gin_q.JPG", a:"긴꼬리왈라비", reveal:"images/anim/gin_a.JPG" },
+      { q:"images/anim/gmgang_q.JPG", a:"금강앵무", reveal:"images/anim/gmgang_a.JPG" },
+      { q:"images/anim/gmnun_q.JPG", a:"그문쇠올빼미", reveal:"images/anim/gmnun_a.JPG" },
+      { q:"images/anim/goni_q.JPG", a:"기러기아과", reveal:"images/anim/goni_a.JPG" },
+      { q:"images/anim/goun_q.JPG", a:"고운점박이푸른부전나비", reveal:"images/anim/goun_a.JPG" },
+      { q:"images/anim/goyange_q.JPG", a:"아시아황금고양이", reveal:"images/anim/goyange_a.JPG" },
+      { q:"images/anim/gripon_q.JPG", a:"그리폰독수리", reveal:"images/anim/gripon_a.JPG" },
+      { q:"images/anim/gubug_q.JPG", a:"늪가로목거북", reveal:"images/anim/gubug_a.JPG" },
+      { q:"images/anim/guisin_q.JPG", a:"북아메리카귀신소쩍새", reveal:"images/anim/guisin_a.JPG" },
+      { q:"images/anim/gurm_q.JPG", a:"구름표범", reveal:"images/anim/gurm_a.JPG" },
+      { q:"images/anim/hinco_q.JPG", a:"흰코사향고양이", reveal:"images/anim/hinco_a.JPG" },
+      { q:"images/anim/hindeng_q.JPG", a:"고산대머리수리속", reveal:"images/anim/hindeng_a.JPG" },
+      { q:"images/anim/hinul_q.JPG", a:"백로속", reveal:"images/anim/hinul_a.JPG" },
+      { q:"images/anim/horangn_q.JPG", a:"절지동물문", reveal:"images/anim/horangn_a.JPG" },
+      { q:"images/anim/hu_q.JPG", a:"얼룩푸른혀도마뱀", reveal:"images/anim/hu_a.JPG" },
+      { q:"images/anim/jacengo_q.JPG", a:"작은고스도치홍어", reveal:"images/anim/jacengo_a.JPG" },
+      { q:"images/anim/jan_q.JPG", a:"잔점박이물범", reveal:"images/anim/jan_a.JPG" },
+      { q:"images/anim/jangnims_q.JPG", a:"수염상어목", reveal:"images/anim/jangnims_a.JPG" },
+      { q:"images/anim/jenet_q.JPG", a:"붉은점박이제넷", reveal:"images/anim/jenet_a.JPG" },
+      { q:"images/anim/jirenge_q.JPG", a:"이베리아지렁이도마뱀", reveal:"images/anim/jirenge_a.JPG" },
+      { q:"images/anim/jugle_q.JPG", a:"척삭동물문", reveal:"images/anim/jugle_a.JPG" },
+      { q:"images/anim/jumbace_q.JPG", a:"하이에나과", reveal:"images/anim/jumbace_a.JPG" },
+      { q:"images/anim/jummug_q.JPG", a:"네발나비과", reveal:"images/anim/jummug_a.JPG" },
+      { q:"images/anim/kanggu_q.JPG", a:"캥거루쥐", reveal:"images/anim/kanggu_a.JPG" },
+      { q:"images/anim/macaroni_q.JPG", a:"마카로니펭귄", reveal:"images/anim/macaroni_a.JPG" },
+      { q:"images/anim/mal_q.JPG", a:"말사슴", reveal:"images/anim/mal_a.JPG" },
+      { q:"images/anim/malddong_q.JPG", a:"붉은꼬리말똥가리", reveal:"images/anim/malddong_a.JPG" },
+      { q:"images/anim/mangchi_q.JPG", a:"망치머리황새", reveal:"images/anim/mangchi_a.JPG" },
+      { q:"images/anim/moggule_q.JPG", a:"목걸이증부리", reveal:"images/anim/moggule_a.JPG" },
+      { q:"images/anim/mongus_q.JPG", a:"큰띠몽구스", reveal:"images/anim/mongus_a.JPG" },
+      { q:"images/anim/moniddo_q.JPG", a:"모니또델몬토", reveal:"images/anim/moniddo_a.JPG" },
+      { q:"images/anim/mora_q.JPG", a:"모래고양이", reveal:"images/anim/mora_a.JPG" },
+      { q:"images/anim/mugda_q.JPG", a:"먹대가리비단뱀", reveal:"images/anim/mugda_a.JPG" },
+      { q:"images/anim/mul_q.JPG", a:"물닭", reveal:"images/anim/mul_a.JPG" },
+      { q:"images/anim/mutjange_q.JPG", a:"큰멋쟁이나비", reveal:"images/anim/mutjange_a.JPG" },
+      { q:"images/anim/namu_q.JPG", a:"린네두발가락나무늘보", reveal:"images/anim/namu_a.JPG" },
+      { q:"images/anim/orino_q.JPG", a:"오리노코악어", reveal:"images/anim/orino_a.JPG" },
+      { q:"images/anim/palma_q.JPG", a:"팔마왈라비", reveal:"images/anim/palma_a.JPG" },
+      { q:"images/anim/paloba_q.JPG", a:"필로바테스테리빌리스", reveal:"images/anim/paloba_a.JPG" },
+      { q:"images/anim/paran_q.JPG", a:"파란고리문어", reveal:"images/anim/paran_a.JPG" },
+      { q:"images/anim/posa_q.JPG", a:"포사", reveal:"images/anim/posa_a.JPG" },
+      { q:"images/anim/pyobum_q.JPG", a:"표범폐어", reveal:"images/anim/pyobum_a.JPG" },
+      { q:"images/anim/rdavra_q.JPG", a:"알다브라코끼리거북", reveal:"images/anim/rdavra_a.JPG" },
+      { q:"images/anim/saki_q.JPG", a:"흰얼굴사키원숭이", reveal:"images/anim/saki_a.JPG" },
+      { q:"images/anim/sanchung_q.JPG", a:"산청개구리", reveal:"images/anim/sanchung_a.JPG" },
+      { q:"images/anim/sangg_q.JPG", a:"큰생쥐귀박쥐", reveal:"images/anim/sangg_a.JPG" },
+      { q:"images/anim/sanho_q.JPG", a:"기둥산호", reveal:"images/anim/sanho_a.JPG" },
+      { q:"images/anim/silbu_q.JPG", a:"실버아로와나", reveal:"images/anim/silbu_a.JPG" },
+      { q:"images/anim/smail_q.JPG", a:"웃는개구리", reveal:"images/anim/smail_a.JPG" },
+      { q:"images/anim/soop_q.JPG", a:"척삭동물문", reveal:"images/anim/soop_a.JPG" },
+      { q:"images/anim/subu_q.JPG", a:"서부나무타기너구리", reveal:"images/anim/subu_a.JPG" },
+      { q:"images/anim/taz_q.JPG", a:"태즈메이니아데빌", reveal:"images/anim/taz_a.JPG" },
+      { q:"images/anim/tungso_q.JPG", a:"은상어목", reveal:"images/anim/tungso_a.JPG" },
+      { q:"images/anim/umsac_q.JPG", a:"염색독개구리", reveal:"images/anim/umsac_a.JPG" }
+      
+    ];
+    let animalProblems=[];
+    let currentAnimal=0;
 
+    document.getElementById("scienceBtn").addEventListener("click",()=>{
+      animalProblems=shuffleArray(animalData.slice());
+      currentAnimal=0;
+      showScreen("animal-game");
+      loadAnimal();
+    });
+
+function loadAnimal() {
+  const p = animalProblems[currentAnimal];
+  document.getElementById("animalImage").src = p.q;
+  document.getElementById("animalAnswerImage").classList.add("hidden");
+  document.getElementById("animalResult").textContent = "";
+  document.getElementById("animalAnswerInput").value = "";
+  document.getElementById("nextAnimalBtn").classList.add("hidden");
+  document.getElementById("animalAnswerSection").style.display = "block";
+  document.getElementById("animalAnswerInput").focus();
+  document.getElementById("animalImage").classList.remove("hidden");
+}
+
+    function checkAnimalAnswer(){
+      const p = animalProblems[currentAnimal];
+      const userInput = document.getElementById("animalAnswerInput").value.trim();
+      const result = document.getElementById("animalResult");
+      if(!userInput) return alert("정답을 입력해주세요!");
+      const normalize = s => s.replace(/\s/g,"").toLowerCase();
+      if(normalize(userInput) === normalize(p.a)){
+        result.textContent = "맞았습니다!";
+        result.style.color = "#16a34a";
+      } else {
+        result.textContent = `틀렸습니다! (정답: ${p.a})`;
+        result.style.color = "#dc2626";
+      }
+      document.getElementById("animalImage").classList.add("hidden");
+      document.getElementById("animalAnswerImage").src = p.reveal;
+      document.getElementById("animalAnswerImage").classList.remove("hidden");
+      document.getElementById("animalAnswerSection").style.display = "none";
+      document.getElementById("nextAnimalBtn").classList.remove("hidden");
+    }
+
+    document.getElementById("animalCheckBtn").addEventListener("click", checkAnimalAnswer);
+    document.getElementById("animalAnswerInput").addEventListener("keydown", e=>{
+      if(e.key==="Enter") checkAnimalAnswer();
+    });
+
+    document.getElementById("nextAnimalBtn").addEventListener("click", ()=>{
+      currentAnimal++;
+      if(currentAnimal >= animalProblems.length){
+        alert("모든 문제를 풀었습니다! ");
+        showScreen("category-screen");
+      } else {
+        loadAnimal();
+      }
+    });
+
+    document.getElementById("backToCategoryBtnAnimal").addEventListener("click", ()=>showScreen("category-screen"));
+
+    // 숫자야구
+    let answer=[], tries=0, maxTries=6;
+    document.getElementById("mathLogicBtn").addEventListener("click", ()=>{
+      showScreen("game-screen");
+      startGame();
+    });
+    document.getElementById("backToCategoryBtn").addEventListener("click", ()=>showScreen("category-screen"));
+    document.getElementById("checkBtn").addEventListener("click", play);
+    function startGame(){
+      answer=[]; tries=0;
+      document.getElementById('triesInfo').textContent=`현재 시도: 0 / ${maxTries}`;
+      document.getElementById('log').innerHTML=""; document.getElementById('userInput').value="";
+      while(answer.length<4){
+        const num=Math.floor(Math.random()*10);
+        if(!answer.includes(num)) answer.push(num);
+      }
+      console.log("정답:", answer.join(''));
+    }
+    function play(){
+      const input = document.getElementById('userInput').value.trim();
+      const log = document.getElementById('log');
+      const info = document.getElementById('triesInfo');
+      if(input.length!==4 || new Set(input).size!==4 || isNaN(input)){
+        alert("서로 다른 숫자 4개를 입력해주세요!");
+        return;
+      }
+      tries++;
+      info.textContent=`현재 시도: ${tries} / ${maxTries}`;
+      const guess = input.split('').map(Number);
+      let strike=0, ball=0;
+      for(let i=0;i<4;i++){
+        if(guess[i]===answer[i]) strike++;
+        else if(answer.includes(guess[i])) ball++;
+      }
+      const result = `${input} → ${strike}S ${ball}B`;
+      const li=document.createElement('li');
+      li.textContent=result;
+      log.prepend(li);
+      if(strike===4){
+        setTimeout(()=>{ alert(`정답입니다! (${tries}번 만에 맞히셨습니다!)`); showScreen("category-screen"); }, 100);
+        return;
+      }
+      if(tries>=maxTries){
+        setTimeout(()=>{ alert(`실패! 정답은 ${answer.join('')} 입니다.`); showScreen("category-screen"); }, 100);
+      }
+      document.getElementById('userInput').value="";
+    }
+
+    // 초기 화면
     showScreen("main-screen");
   </script>
 </body>
