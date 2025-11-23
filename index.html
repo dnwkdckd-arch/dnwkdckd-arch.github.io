@@ -4,410 +4,850 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>맞히기 게임</title>
+
   <style>
-    body { font-family: "Pretendard", sans-serif; text-align:center; margin:0; background:#f1f5f9; color:#1e293b; }
-    button { padding:12px 25px; font-size:1.1rem; border:none; border-radius:10px; cursor:pointer; transition:all 0.3s ease; background:#2563eb; color:white; margin:10px; position:relative; }
-    button:hover { background:#1e3a8a; transform:scale(1.05); }
-    .screen { display:none; padding:40px; animation:fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    #main-screen { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:linear-gradient(135deg, #3b82f6, #1e3a8a); color:white; }
-    #main-screen h1 { font-size:3rem; margin-bottom:40px; }
-    .main-buttons-container { margin-top:15vh; }
-    #category-screen { background:#f8fafc; }
-    .category-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; max-width:800px; margin:30px auto; }
-    .category-grid button { background:#94a3b8; color:white; width:100%; height:60px; font-size:1rem; }
-    .category-grid button:hover { background:#475569; }
-    .tooltip { visibility:hidden; opacity:0; background:rgba(0,0,0,0.85); color:white; text-align:center; border-radius:8px; padding:10px 14px; position:absolute; top:-70px; left:50%; transform:translateX(-50%) translateY(10px); transition:opacity 0.3s ease, transform 0.3s ease; width:max-content; max-width:340px; font-size:0.9rem; line-height:1.5; z-index:10; pointer-events:none; }
-    .tooltip::after { content:""; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); border-width:6px; border-style:solid; border-color:rgba(0,0,0,0.85) transparent transparent transparent; }
-    .tooltip-container { display:inline-block; position:relative; }
-    .tooltip-container:hover .tooltip { visibility:visible; opacity:1; transform:translateX(-50%) translateY(0); }
+    body {
+      font-family: "Pretendard", sans-serif;
+      text-align: center;
+      margin: 0;
+      background: #f1f5f9;
+      color: #1e293b;
+    }
 
-    /* 숫자야구 게임 */
-    #game-screen h1 { color:#2563eb; }
-    ul { list-style:none; padding:0; max-width:300px; margin:20px auto; }
-    li { margin:8px 0; padding:8px; background:#e2e8f0; border-radius:8px; }
-    .info { margin-top:15px; font-weight:bold; }
+    button {
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #2563eb;
+      color: white;
+      margin: 10px;
+      position: relative;
+    }
+    button:hover {
+      background: #1e3a8a;
+      transform: scale(1.05);
+    }
 
-    /* 과자 게임 */
-    #snack-game img, #animal-game img { max-width:300px; border-radius:15px; box-shadow:0 4px 10px rgba(0,0,0,0.2); margin-bottom:20px; }
-    .hidden { display:none; }
-    .small { font-size:0.9rem; color:#334155; }
+    .screen {
+      display: none;
+      padding: 40px;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    /* 폰트 맞히기 */
-    #font-game span { cursor:pointer; display:inline-block; margin:0 5px; font-size:2rem; user-select:none; }
-    #font-game .helvetica { font-family:"Helvetica", sans-serif; }
-    #font-game .other { font-family:"Arial", sans-serif; }
+    #main-screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+      color: white;
+    }
+    #main-screen h1 {
+      font-size: 3rem;
+      margin-bottom: 40px;
+    }
+
+    .main-buttons-container {
+      margin-top: 15vh;
+    }
+
+    /* 카테고리 */
+    #category-screen {
+      background: #f8fafc;
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      max-width: 800px;
+      margin: 30px auto;
+    }
+    .category-grid button {
+      background: #94a3b8;
+      color: white;
+      width: 100%;
+      height: 60px;
+      font-size: 1rem;
+    }
+    .category-grid button:hover {
+      background: #475569;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      visibility: hidden;
+      opacity: 0;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      text-align: center;
+      border-radius: 8px;
+      padding: 10px 14px;
+      position: absolute;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      width: max-content;
+      max-width: 340px;
+      font-size: 0.9rem;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+    }
+    .tooltip-container {
+      display: inline-block;
+      position: relative;
+    }
+    .tooltip-container:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* 이미지 게임 공통 */
+    #snack-game img,
+    #animal-game img,
+    #univ-game img {
+      max-width: 300px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+    .small {
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    /* 폰트 게임 */
+    #font-game span {
+      cursor: pointer;
+      display: inline-block;
+      margin: 0 5px;
+      font-size: 2rem;
+      user-select: none;
+    }
+    #font-game .helvetica {
+      font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
+      font-weight: 400;
+    }
+    #font-game .other {
+      font-family: Arial, "Helvetica Neue", sans-serif;
+      font-weight: 400;
+    }
+
+/* 숫자야구 게임 */
+#game-screen h1 {
+  color: #2563eb;    /* 파란 제목 */
+}
+
+#game-screen ul {
+  list-style: none;
+  padding: 0;
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+#game-screen li {
+  margin: 8px 0;
+  padding: 8px;
+  background: #e2e8f0;    /* 연한 회색 박스 */
+  border-radius: 8px;
+}
+
+#game-screen .info {
+  margin-top: 15px;
+  font-weight: bold;
+}
   </style>
 </head>
 <body>
-  <!-- 메인 화면 -->
-  <div id="main-screen" class="screen" style="display:flex;">
-    <h1>맞히기 게임</h1>
-    <div class="main-buttons-container">
-      <div class="tooltip-container"><button id="categoryBtn">카테고리</button><span class="tooltip">언어·수학·논리 등의 문제 유형을 골라서 진행할 수 있습니다</span></div>
-      <div class="tooltip-container"><button id="classicBtn">클래식</button><span class="tooltip">여러 가지 카테고리가 섞인 방식으로 틀릴 때까지 진행됩니다</span></div>
+
+<!-- 메인 화면 -->
+<div id="main-screen" class="screen" style="display: flex;">
+  <h1>맞히기 게임</h1>
+  <div class="main-buttons-container">
+    <div class="tooltip-container">
+      <button id="categoryBtn">카테고리</button>
+      <span class="tooltip">언어·수학·논리 등의 문제 유형을 골라서 진행할 수 있습니다</span>
+    </div>
+    <div class="tooltip-container">
+      <button id="classicBtn">클래식</button>
+      <span class="tooltip">여러 가지 카테고리가 섞인 방식으로 틀릴 때까지 진행됩니다</span>
     </div>
   </div>
+</div>
 
-  <!-- 카테고리 화면 -->
-  <div id="category-screen" class="screen">
-    <h2>카테고리를 선택하세요</h2>
-    <div class="category-grid">
-      <div class="tooltip-container"><button>언어</button><span class="tooltip">맞춤법, 속담, 사자성어, 어원</span></div>
-      <div class="tooltip-container"><button id="mathLogicBtn">수학·논리</button><span class="tooltip">계산, 확률, 도형, 논리 퀴즈, 수열</span></div>
-      <div class="tooltip-container"><button id="scienceBtn">과학</button><span class="tooltip">동물, 식물, 생물학, 지구과학</span></div>
-      <div class="tooltip-container"><button>사회·정치·법</button><span class="tooltip">정부 구조, 헌법, 사회 제도</span></div>
-      <div class="tooltip-container"><button>경제·금융</button><span class="tooltip">환율, 주식, 세금, 통화</span></div>
-      <div class="tooltip-container"><button>문화·예술·스포츠</button><span class="tooltip">미술, 음악, 문학, 영화, 연극, 디자인, 스포츠</span></div>
-      <div class="tooltip-container"><button>IT·기술</button><span class="tooltip">컴퓨터, 스마트폰, 인터넷 용어, AI, 프로그래밍</span></div>
-      <div class="tooltip-container"><button id="snackBtn">생활상식</button><span class="tooltip">건강, 음식, 안전, 소비, 교통, 매너, 재활용</span></div>
-      <div class="tooltip-container"><button>문학·철학·종교</button><span class="tooltip">고전 명언, 사상가, 성경·불경·신화</span></div>
-      <div class="tooltip-container"><button id="fontBtn">창의·두뇌퍼즐</button><span class="tooltip">수수께끼, IQ 문제, 패턴 추리, 폰트 맞히기</span></div>
-      <div class="tooltip-container"><button>잡학</button><span class="tooltip">진짜 잡지식</span></div>
+<!-- 카테고리 화면 -->
+<div id="category-screen" class="screen">
+  <h2>카테고리를 선택하세요</h2>
+  <div class="category-grid">
+    <div class="tooltip-container">
+      <button>언어</button><span class="tooltip">맞춤법, 속담, 사자성어, 어원</span>
     </div>
-    <button id="backToMainBtn">⬅ 메인으로</button>
-  </div>
 
-  <!-- 폰트 맞히기 화면 -->
-  <div id="font-game" class="screen">
-    <h1>폰트 맞히기</h1>
-    <p id="fontGuessResult" class="info">글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!</p>
-    <div id="lettersContainer"></div>
-    <button id="fontCheckBtn">정답 확인</button>
-    <button id="backToCategoryBtnFont">⬅ 카테고리로 돌아가기</button>
-  </div>
+    <div class="tooltip-container">
+      <button id="mathLogicBtn">수학·논리</button>
+      <span class="tooltip">계산, 확률, 도형, 논리 퀴즈, 수열</span>
+    </div>
 
-  <!-- 과자 이름 맞히기 화면 -->
-  <div id="snack-game" class="screen">
-    <h1>과자 이름 맞히기 </h1>
-    <p class="small">가려진 이미지를 보고 과자 이름을 입력하세요.</p>
-    <img id="snackImage" src="" alt="문제 이미지">
-    <img id="answerImage" src="" alt="정답 이미지" class="hidden">
-    <div id="answerSection">
-      <input id="answerInput" type="text" placeholder="과자 이름 입력" />
-      <button id="snackCheckBtn">확인</button>
+    <div class="tooltip-container">
+      <button id="scienceBtn">과학</button>
+      <span class="tooltip">동물, 식물, 생물학, 지구과학</span>
     </div>
-    <p id="snackResult" class="info"></p>
-    <div style="margin-top:14px;">
-      <button id="nextSnackBtn" class="hidden">다음 문제 ▶</button>
-      <button id="backToCategoryBtn2">⬅ 카테고리로 돌아가기</button>
-    </div>
-  </div>
 
-  <!-- 동물 맞히기 화면 -->
-  <div id="animal-game" class="screen">
-    <h1>동물 맞히기</h1>
-    <p class="small">가려진 이미지를 보고 동물 이름 혹은 종속과목강문계를 입력하세요.</p>
-    <img id="animalImage" src="" alt="문제 이미지">
-    <img id="animalAnswerImage" src="" alt="정답 이미지" class="hidden">
-    <div id="animalAnswerSection">
-      <input id="animalAnswerInput" type="text" placeholder="입력" />
-      <button id="animalCheckBtn">확인</button>
+    <div class="tooltip-container">
+      <button>사회·정치·법</button>
+      <span class="tooltip">정부 구조, 헌법, 사회 제도</span>
     </div>
-    <p id="animalResult" class="info"></p>
-    <div style="margin-top:14px;">
-      <button id="nextAnimalBtn" class="hidden">다음 문제 ▶</button>
-      <button id="backToCategoryBtnAnimal">⬅ 카테고리로 돌아가기</button>
+
+    <div class="tooltip-container">
+      <button>경제·금융</button>
+      <span class="tooltip">환율, 주식, 세금, 통화</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button>문화·예술·스포츠</button>
+      <span class="tooltip">미술, 음악, 문학, 영화, 연극, 디자인, 스포츠</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button>IT·기술</button>
+      <span class="tooltip">컴퓨터, 스마트폰, 인터넷 용어, AI, 프로그래밍</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button id="snackBtn">생활상식</button>
+      <span class="tooltip">건강, 음식, 안전, 소비, 교통, 매너, 재활용</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button>문학·철학·종교</button>
+      <span class="tooltip">고전 명언, 사상가, 성경·불경·신화</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button id="creativeBtn">창의·두뇌퍼즐</button>
+      <span class="tooltip">수수께끼, IQ 문제, 패턴 추리, 폰트·대학교 맞히기</span>
+    </div>
+
+    <div class="tooltip-container">
+      <button>잡학</button>
+      <span class="tooltip">진짜 잡지식</span>
     </div>
   </div>
+  <button id="backToMainBtn">⬅ 메인으로</button>
+</div>
 
-  <!-- 숫자야구 게임 화면 -->
-  <div id="game-screen" class="screen">
-    <h1>4자리 숫자야구</h1>
-    <p>서로 다른 숫자 4개를 맞혀보세요! (시도 횟수: 최대 6번)</p>
-    <input type="text" id="userInput" placeholder="예: 1234" maxlength="4" />
-    <button id="checkBtn">확인</button>
-    <p class="info" id="triesInfo">현재 시도: 0 / 6</p>
-    <ul id="log"></ul>
-    <button id="backToCategoryBtn">⬅ 카테고리로 돌아가기</button>
+<!-- 폰트 맞히기 -->
+<div id="font-game" class="screen">
+  <h1>폰트 맞히기</h1>
+  <p id="fontGuessResult" class="info">글자 중 Helvetica 글자를 찾으세요!</p>
+  <div id="lettersContainer"></div>
+  <button id="fontCheckBtn">정답 확인</button>
+  <button id="nextFontBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtnFont">⬅ 카테고리로 돌아가기</button>
+</div>
+
+<!-- 대학교 맞히기 -->
+<div id="univ-game" class="screen">
+  <h1>대학교 맞히기</h1>
+  <p class="small">합격 후기 내용을 보고 대학 이름을 입력하세요.</p>
+  <img id="univImage" src="" alt="질문 이미지" />
+  <img id="univAnswerImage" src="" class="hidden" alt="정답 이미지" />
+  <div id="univAnswerSection">
+    <input id="univAnswerInput" type="text" placeholder="대학교 이름 입력" />
+    <button id="univCheckBtn">확인</button>
   </div>
+  <p id="univResult" class="info"></p>
+  <button id="nextUnivBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtnUniv">⬅ 카테고리로 돌아가기</button>
+</div>
 
-  <script>
-    function showScreen(id) {
-      document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = (id==="main-screen")?"flex":"block";
-    }
+<!-- 숫자야구 화면 -->
+<div id="game-screen" class="screen">
+  <h1>4자리 숫자야구</h1>
+  <p>서로 다른 숫자 4개를 맞혀보세요! (최대 6번)</p>
+  <input type="text" id="userInput" maxlength="4" placeholder="예: 1234" />
+  <button id="checkBtn">확인</button>
+  <p id="triesInfo" class="info">현재 시도: 0 / 6</p>
+  <ul id="log"></ul>
+  <button id="backToCategoryBtn">⬅ 카테고리로 돌아가기</button>
+</div>
 
-    document.getElementById("categoryBtn").addEventListener("click",()=>showScreen("category-screen"));
-    document.getElementById("backToMainBtn").addEventListener("click",()=>showScreen("main-screen"));
-    document.getElementById("classicBtn").addEventListener("click",()=>alert("클래식 모드는 준비 중입니다!"));
-    document.getElementById("backToCategoryBtnFont").addEventListener("click",()=>showScreen("category-screen"));
+<!-- 과자 맞히기 화면 -->
+<div id="snack-game" class="screen">
+  <h1>과자 이름 맞히기</h1>
+  <p class="small">가려진 이미지를 보고 과자 이름을 입력하세요.</p>
+  <img id="snackImage" src="" alt="문제 이미지" />
+  <img id="answerImage" src="" alt="정답 이미지" class="hidden" />
+  <div id="answerSection">
+    <input id="answerInput" type="text" placeholder="과자 이름 입력" />
+    <button id="snackCheckBtn">확인</button>
+  </div>
+  <p id="snackResult" class="info"></p>
+  <button id="nextSnackBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtn2">⬅ 카테고리로 돌아가기</button>
+</div>
 
-    // 폰트 맞히기
-    const fontBtn = document.getElementById("fontBtn");
-    fontBtn.addEventListener("click", ()=>{
-      showScreen("font-game");
-      startFontGame();
-    });
+<!-- 동물 맞히기 화면 -->
+<div id="animal-game" class="screen">
+  <h1>동물 맞히기</h1>
+  <p class="small">가려진 이미지를 보고 동물 이름을 입력하세요.</p>
+  <img id="animalImage" src="" alt="문제 이미지" />
+  <img id="animalAnswerImage" src="" class="hidden" alt="정답 이미지" />
+  <div id="animalAnswerSection">
+    <input id="animalAnswerInput" type="text" placeholder="입력" />
+    <button id="animalCheckBtn">확인</button>
+  </div>
+  <p id="animalResult" class="info"></p>
+  <button id="nextAnimalBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtnAnimal">⬅ 카테고리로 돌아가기</button>
+</div>
 
-    let fontCorrectIndex=null;
-    let fontSelectedIndex=null;
-    let fontChecked=false;
+<script>
+/* =============================
+   공통 화면 전환
+============================= */
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
+  document.getElementById(id).style.display = id === "main-screen" ? "flex" : "block";
+}
 
-    function startFontGame(){
-      const lettersContainer = document.getElementById("lettersContainer");
-      lettersContainer.innerHTML="";
-      fontCorrectIndex = Math.floor(Math.random()*12);
-      fontSelectedIndex=null;
-      fontChecked=false;
+/* =============================
+   섞기 함수
+============================= */
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
-      for(let i=0;i<12;i++){
-        const span=document.createElement("span");
-        span.textContent=String.fromCharCode(65+i);
-        span.className=(i===fontCorrectIndex)?"helvetica":"other";
-        span.dataset.index=i;
-        span.style.textDecoration="none";
-        span.addEventListener("click", ()=>{
-          if(fontChecked) return;
-          if(fontSelectedIndex!==null) lettersContainer.children[fontSelectedIndex].style.textDecoration="none";
-          span.style.textDecoration="underline";
-          fontSelectedIndex=i;
-        });
-        lettersContainer.appendChild(span);
-      }
-      document.getElementById("fontGuessResult").textContent="글자 중 Helvetica 글자를 클릭하고 확인 버튼을 누르세요!";
-      document.getElementById("fontGuessResult").style.color="#1e293b";
-    }
+/* =============================
+   메인/카테고리 버튼
+============================= */
+document.getElementById("categoryBtn").onclick = () => showScreen("category-screen");
+document.getElementById("backToMainBtn").onclick = () => showScreen("main-screen");
+document.getElementById("classicBtn").onclick = () => alert("클래식 모드는 준비 중입니다!");
 
-    document.getElementById("fontCheckBtn").addEventListener("click",()=>{
-      if(fontChecked) return;
-      fontChecked=true;
-      const lettersContainer=document.getElementById("lettersContainer");
-      for(let i=0;i<lettersContainer.children.length;i++){
-        lettersContainer.children[i].style.pointerEvents="none";
-      }
+/* =============================
+   숫자 야구 게임
+============================= */
+let answer = [];
+let tries = 0;
+const maxTries = 6;
 
-      const result=document.getElementById("fontGuessResult");
-      if(fontSelectedIndex===fontCorrectIndex){
-        result.textContent="모두 맞혔습니다!";
-        result.style.color="#16a34a";
-      }else{
-        result.textContent=`틀렸습니다! Helvetica 글자는 "${lettersContainer.children[fontCorrectIndex].textContent}"입니다.`;
-        result.style.color="#dc2626";
-        lettersContainer.children[fontCorrectIndex].style.textDecoration="underline";
-      }
-    });
+document.getElementById("mathLogicBtn").onclick = () => {
+  showScreen("game-screen");
+  startGame();
+};
 
-    // 과자 맞히기
-    const snackData=[
-      { q:"images/ChocoSongi_q.JPG",a:"초코송이",reveal:"images/ChocoSongi_a.JPG" },
-      { q:"images/pocachip_q.JPG",a:"포카칩오리지널",reveal:"images/pocachip_a.JPG" },
-      { q:"images/PotetochipOriginal_q.JPG",a:"포테토칩오리지널",reveal:"images/PotetochipOriginal_a.JPG" },
-      { q:"images/JjolbyeongMaekomhanMat_q.JPG",a:"쫄병매콤한맛",reveal:"images/JjolbyeongMaekomhanMat_a.JPG" }
-    ];
-    let snackProblems=[];
-    let currentSnack=0;
-    function shuffleArray(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-    document.getElementById("snackBtn").addEventListener("click",()=>{snackProblems=shuffleArray(snackData.slice());currentSnack=0;showScreen("snack-game");loadSnack();});
-    function loadSnack(){const p=snackProblems[currentSnack];document.getElementById("snackImage").src=p.q;document.getElementById("answerImage").classList.add("hidden");document.getElementById("snackResult").textContent="";document.getElementById("answerInput").value="";document.getElementById("nextSnackBtn").classList.add("hidden");document.getElementById("answerSection").style.display="block";document.getElementById("answerInput").focus();document.getElementById("snackImage").classList.remove("hidden");}
-    function checkAnswer(){const p=snackProblems[currentSnack];const userInput=document.getElementById("answerInput").value.trim();const result=document.getElementById("snackResult");if(!userInput)return alert("정답을 입력해주세요!");const normalize=s=>s.replace(/\s/g,"").toLowerCase();if(normalize(userInput)===normalize(p.a)){result.textContent="✅ 맞았습니다!";result.style.color="#16a34a";}else{result.textContent=`❌ 틀렸습니다! (정답: ${p.a})`;result.style.color="#dc2626";}document.getElementById("snackImage").classList.add("hidden");document.getElementById("answerImage").src=p.reveal;document.getElementById("answerImage").classList.remove("hidden");document.getElementById("answerSection").style.display="none";document.getElementById("nextSnackBtn").classList.remove("hidden");}
-    document.getElementById("snackCheckBtn").addEventListener("click",checkAnswer);
-    document.getElementById("answerInput").addEventListener("keydown",e=>{if(e.key==="Enter")checkAnswer();});
-    document.getElementById("nextSnackBtn").addEventListener("click",()=>{currentSnack++;if(currentSnack>=snackProblems.length){alert("모든 문제를 풀었습니다! 🎉");showScreen("category-screen");}else{loadSnack();}});
-    document.getElementById("backToCategoryBtn2").addEventListener("click",()=>showScreen("category-screen"));
+function startGame() {
+  answer = [];
+  tries = 0;
+  document.getElementById("triesInfo").textContent = `현재 시도: 0 / ${maxTries}`;
+  document.getElementById("log").innerHTML = "";
+  document.getElementById("userInput").value = "";
 
-    // 동물 맞히기 데이터
-    const animalData=[
-      { q:"images/anim/acau_q.JPG", a:"악어거북", reveal:"images/anim/acau_a.JPG" },
-      { q:"images/anim/adeli_q.JPG", a:"아델리펭귄", reveal:"images/anim/adeli_a.JPG" },
-      { q:"images/anim/agi_q.JPG", a:"애기웜뱃", reveal:"images/anim/agi_a.JPG" },
-      { q:"images/anim/ahob_q.JPG", a:"아홉띠아르마딜로", reveal:"images/anim/ahob_a.JPG" },
-      { q:"images/anim/alac_q.JPG", a:"알락꼬리고양이", reveal:"images/anim/alac_a.JPG" },
-      { q:"images/anim/andes_q.JPG", a:"아메리카검은댕기해오라기", reveal:"images/anim/andes_a.JPG" },
-      { q:"images/anim/angkarana_q.JPG", a:"안데스산고양이", reveal:"images/anim/angkarana_a.JPG" },
-      { q:"images/anim/angung_q.JPG", a:"앙카라나족제비여우원숭이", reveal:"images/anim/angung_a.JPG" },
-      { q:"images/anim/bacg_q.JPG", a:"남방안경영원", reveal:"images/anim/bacg_a.JPG" },
-      { q:"images/anim/bacge_q.JPG", a:"박쥐귀여우", reveal:"images/anim/bacge_a.JPG" },
-      { q:"images/anim/bachu_q.JPG", a:"배추흰나비", reveal:"images/anim/bachu_a.JPG" },
-      { q:"images/anim/bau_q.JPG", a:"노랑반점바위너구리", reveal:"images/anim/bau_a.JPG" },
-      { q:"images/anim/bonith_q.JPG", a:"보닛헤드귀상어", reveal:"images/anim/bonith_a.JPG" },
-      { q:"images/anim/buchi_q.JPG", a:"자메이카벌잡이부치새", reveal:"images/anim/buchi_a.JPG" },
-      { q:"images/anim/bulgam_q.JPG", a:"벌감펭", reveal:"images/anim/bulgam_a.JPG" },
-      { q:"images/anim/bulgend_q.JPG", a:"붉은다리개구리", reveal:"images/anim/bulgend_a.JPG" },
-      { q:"images/anim/burij_q.JPG", a:"노랑부리저어새", reveal:"images/anim/burij_a.JPG" },
-      { q:"images/anim/cano_q.JPG", a:"카노두더지", reveal:"images/anim/cano_a.JPG" },
-      { q:"images/anim/carive_q.JPG", a:"카리브암초꼴뚜기", reveal:"images/anim/carive_a.JPG" },
-      { q:"images/anim/casp_q.JPG", a:"카스피채찍뱀", reveal:"images/anim/casp_a.JPG" },
-      { q:"images/anim/cham_q.JPG", a:"참게", reveal:"images/anim/cham_a.JPG" },
-      { q:"images/anim/chamm_q.JPG", a:"참문어", reveal:"images/anim/chamm_a.JPG" },
-      { q:"images/anim/chorug_q.JPG", a:"초록나무비단뱀", reveal:"images/anim/chorug_a.JPG" },
-      { q:"images/anim/codcod_q.JPG", a:"코드코드", reveal:"images/anim/codcod_a.JPG" },
-      { q:"images/anim/cuten_q.JPG", a:"커튼원양해파리", reveal:"images/anim/cuten_a.JPG" },
-      { q:"images/anim/ddangdoa_q.JPG", a:"땅돼지", reveal:"images/anim/ddangdoa_a.JPG" },
-      { q:"images/anim/dongsu_q.JPG", a:"동수구리", reveal:"images/anim/dongsu_a.JPG" },
-      { q:"images/anim/dotom_q.JPG", a:"도톰꼬리도마뱀붙이", reveal:"images/anim/dotom_a.JPG" },
-      { q:"images/anim/dotori_q.JPG", a:"도토리귀고둥", reveal:"images/anim/dotori_a.JPG" },
-      { q:"images/anim/dumbul_q.JPG", a:"덤불해오라기", reveal:"images/anim/dumbul_a.JPG" },
-      { q:"images/anim/g_q.JPG", a:"사향쥐캥거루", reveal:"images/anim/g_a.JPG" },
-      { q:"images/anim/gabir_q.JPG", a:"가비알", reveal:"images/anim/gabir_a.JPG" },
-      { q:"images/anim/galsacu_q.JPG", a:"갈색얼거니새", reveal:"images/anim/galsacu_a.JPG" },
-      { q:"images/anim/gami_q.JPG", a:"주머니개미핥기", reveal:"images/anim/gami_a.JPG" },
-      { q:"images/anim/garo_q.JPG", a:"가로줄무늬자칼", reveal:"images/anim/garo_a.JPG" },
-      { q:"images/anim/gin_q.JPG", a:"긴꼬리왈라비", reveal:"images/anim/gin_a.JPG" },
-      { q:"images/anim/gmgang_q.JPG", a:"금강앵무", reveal:"images/anim/gmgang_a.JPG" },
-      { q:"images/anim/gmnun_q.JPG", a:"그문쇠올빼미", reveal:"images/anim/gmnun_a.JPG" },
-      { q:"images/anim/goni_q.JPG", a:"기러기아과", reveal:"images/anim/goni_a.JPG" },
-      { q:"images/anim/goun_q.JPG", a:"고운점박이푸른부전나비", reveal:"images/anim/goun_a.JPG" },
-      { q:"images/anim/goyange_q.JPG", a:"아시아황금고양이", reveal:"images/anim/goyange_a.JPG" },
-      { q:"images/anim/gripon_q.JPG", a:"그리폰독수리", reveal:"images/anim/gripon_a.JPG" },
-      { q:"images/anim/gubug_q.JPG", a:"늪가로목거북", reveal:"images/anim/gubug_a.JPG" },
-      { q:"images/anim/guisin_q.JPG", a:"북아메리카귀신소쩍새", reveal:"images/anim/guisin_a.JPG" },
-      { q:"images/anim/gurm_q.JPG", a:"구름표범", reveal:"images/anim/gurm_a.JPG" },
-      { q:"images/anim/hinco_q.JPG", a:"흰코사향고양이", reveal:"images/anim/hinco_a.JPG" },
-      { q:"images/anim/hindeng_q.JPG", a:"고산대머리수리속", reveal:"images/anim/hindeng_a.JPG" },
-      { q:"images/anim/hinul_q.JPG", a:"백로속", reveal:"images/anim/hinul_a.JPG" },
-      { q:"images/anim/horangn_q.JPG", a:"절지동물문", reveal:"images/anim/horangn_a.JPG" },
-      { q:"images/anim/hu_q.JPG", a:"얼룩푸른혀도마뱀", reveal:"images/anim/hu_a.JPG" },
-      { q:"images/anim/jacengo_q.JPG", a:"작은고스도치홍어", reveal:"images/anim/jacengo_a.JPG" },
-      { q:"images/anim/jan_q.JPG", a:"잔점박이물범", reveal:"images/anim/jan_a.JPG" },
-      { q:"images/anim/jangnims_q.JPG", a:"수염상어목", reveal:"images/anim/jangnims_a.JPG" },
-      { q:"images/anim/jenet_q.JPG", a:"붉은점박이제넷", reveal:"images/anim/jenet_a.JPG" },
-      { q:"images/anim/jirenge_q.JPG", a:"이베리아지렁이도마뱀", reveal:"images/anim/jirenge_a.JPG" },
-      { q:"images/anim/jugle_q.JPG", a:"척삭동물문", reveal:"images/anim/jugle_a.JPG" },
-      { q:"images/anim/jumbace_q.JPG", a:"하이에나과", reveal:"images/anim/jumbace_a.JPG" },
-      { q:"images/anim/jummug_q.JPG", a:"네발나비과", reveal:"images/anim/jummug_a.JPG" },
-      { q:"images/anim/kanggu_q.JPG", a:"캥거루쥐", reveal:"images/anim/kanggu_a.JPG" },
-      { q:"images/anim/macaroni_q.JPG", a:"마카로니펭귄", reveal:"images/anim/macaroni_a.JPG" },
-      { q:"images/anim/mal_q.JPG", a:"말사슴", reveal:"images/anim/mal_a.JPG" },
-      { q:"images/anim/malddong_q.JPG", a:"붉은꼬리말똥가리", reveal:"images/anim/malddong_a.JPG" },
-      { q:"images/anim/mangchi_q.JPG", a:"망치머리황새", reveal:"images/anim/mangchi_a.JPG" },
-      { q:"images/anim/moggule_q.JPG", a:"목걸이증부리", reveal:"images/anim/moggule_a.JPG" },
-      { q:"images/anim/mongus_q.JPG", a:"큰띠몽구스", reveal:"images/anim/mongus_a.JPG" },
-      { q:"images/anim/moniddo_q.JPG", a:"모니또델몬토", reveal:"images/anim/moniddo_a.JPG" },
-      { q:"images/anim/mora_q.JPG", a:"모래고양이", reveal:"images/anim/mora_a.JPG" },
-      { q:"images/anim/mugda_q.JPG", a:"먹대가리비단뱀", reveal:"images/anim/mugda_a.JPG" },
-      { q:"images/anim/mul_q.JPG", a:"물닭", reveal:"images/anim/mul_a.JPG" },
-      { q:"images/anim/mutjange_q.JPG", a:"큰멋쟁이나비", reveal:"images/anim/mutjange_a.JPG" },
-      { q:"images/anim/namu_q.JPG", a:"린네두발가락나무늘보", reveal:"images/anim/namu_a.JPG" },
-      { q:"images/anim/orino_q.JPG", a:"오리노코악어", reveal:"images/anim/orino_a.JPG" },
-      { q:"images/anim/palma_q.JPG", a:"팔마왈라비", reveal:"images/anim/palma_a.JPG" },
-      { q:"images/anim/paloba_q.JPG", a:"필로바테스테리빌리스", reveal:"images/anim/paloba_a.JPG" },
-      { q:"images/anim/paran_q.JPG", a:"파란고리문어", reveal:"images/anim/paran_a.JPG" },
-      { q:"images/anim/posa_q.JPG", a:"포사", reveal:"images/anim/posa_a.JPG" },
-      { q:"images/anim/pyobum_q.JPG", a:"표범폐어", reveal:"images/anim/pyobum_a.JPG" },
-      { q:"images/anim/rdavra_q.JPG", a:"알다브라코끼리거북", reveal:"images/anim/rdavra_a.JPG" },
-      { q:"images/anim/saki_q.JPG", a:"흰얼굴사키원숭이", reveal:"images/anim/saki_a.JPG" },
-      { q:"images/anim/sanchung_q.JPG", a:"산청개구리", reveal:"images/anim/sanchung_a.JPG" },
-      { q:"images/anim/sangg_q.JPG", a:"큰생쥐귀박쥐", reveal:"images/anim/sangg_a.JPG" },
-      { q:"images/anim/sanho_q.JPG", a:"기둥산호", reveal:"images/anim/sanho_a.JPG" },
-      { q:"images/anim/silbu_q.JPG", a:"실버아로와나", reveal:"images/anim/silbu_a.JPG" },
-      { q:"images/anim/smail_q.JPG", a:"웃는개구리", reveal:"images/anim/smail_a.JPG" },
-      { q:"images/anim/soop_q.JPG", a:"척삭동물문", reveal:"images/anim/soop_a.JPG" },
-      { q:"images/anim/subu_q.JPG", a:"서부나무타기너구리", reveal:"images/anim/subu_a.JPG" },
-      { q:"images/anim/taz_q.JPG", a:"태즈메이니아데빌", reveal:"images/anim/taz_a.JPG" },
-      { q:"images/anim/tungso_q.JPG", a:"은상어목", reveal:"images/anim/tungso_a.JPG" },
-      { q:"images/anim/umsac_q.JPG", a:"염색독개구리", reveal:"images/anim/umsac_a.JPG" }
-      
-    ];
-    let animalProblems=[];
-    let currentAnimal=0;
+  while (answer.length < 4) {
+    const num = Math.floor(Math.random() * 10);
+    if (!answer.includes(num)) answer.push(num);
+  }
+}
 
-    document.getElementById("scienceBtn").addEventListener("click",()=>{
-      animalProblems=shuffleArray(animalData.slice());
-      currentAnimal=0;
-      showScreen("animal-game");
-      loadAnimal();
-    });
+document.getElementById("checkBtn").onclick = play;
+
+function play() {
+  const input = document.getElementById("userInput").value.trim();
+  const log = document.getElementById("log");
+  const info = document.getElementById("triesInfo");
+
+  if (input.length !== 4 || new Set(input).size !== 4 || isNaN(input)) {
+    alert("서로 다른 숫자 4개를 입력해주세요!");
+    return;
+  }
+
+  tries++;
+  info.textContent = `현재 시도: ${tries} / ${maxTries}`;
+
+  let strike = 0, ball = 0;
+  input.split("").map(Number).forEach((n, i) => {
+    if (n === answer[i]) strike++;
+    else if (answer.includes(n)) ball++;
+  });
+
+  const li = document.createElement("li");
+  li.textContent = `${input} → ${strike}S ${ball}B`;
+  log.prepend(li);
+
+  if (strike === 4) {
+    setTimeout(() => {
+      alert(`정답입니다! (${tries}번 만에 맞힘)`);
+      showScreen("category-screen");
+    }, 150);
+    return;
+  }
+
+  if (tries >= maxTries) {
+    setTimeout(() => {
+      alert(`실패! 정답은 ${answer.join("")}`);
+      showScreen("category-screen");
+    }, 150);
+  }
+
+  document.getElementById("userInput").value = "";
+}
+
+/* 숫자야구 뒤로가기 */
+document.getElementById("backToCategoryBtn").onclick = () =>
+  showScreen("category-screen");
+
+/* =============================
+   과자 맞히기
+============================= */
+const snackData = [
+  { q: "images/ChocoSongi_q.JPG", a: "초코송이", reveal: "images/ChocoSongi_a.JPG" },
+  { q: "images/pocachip_q.JPG", a: "포카칩오리지널", reveal: "images/pocachip_a.JPG" },
+  { q: "images/PotetochipOriginal_q.JPG", a: "포테토칩오리지널", reveal: "images/PotetochipOriginal_a.JPG" },
+  { q: "images/JjolbyeongMaekomhanMat_q.JPG", a: "쫄병매콤한맛", reveal: "images/JjolbyeongMaekomhanMat_a.JPG" }
+];
+
+let snackProblems = [];
+let currentSnack = 0;
+
+document.getElementById("snackBtn").onclick = () => {
+  snackProblems = shuffleArray(snackData.slice());
+  currentSnack = 0;
+  showScreen("snack-game");
+  loadSnack();
+};
+
+function loadSnack() {
+  const p = snackProblems[currentSnack];
+  document.getElementById("snackImage").src = p.q;
+  document.getElementById("answerImage").classList.add("hidden");
+  document.getElementById("snackImage").classList.remove("hidden");
+  document.getElementById("snackResult").textContent = "";
+  document.getElementById("answerInput").value = "";
+  document.getElementById("answerSection").style.display = "block";
+  document.getElementById("nextSnackBtn").classList.add("hidden");
+}
+
+document.getElementById("snackCheckBtn").onclick = () => {
+  const p = snackProblems[currentSnack];
+  const input = document.getElementById("answerInput").value.trim();
+  const result = document.getElementById("snackResult");
+
+  if (!input) return alert("정답을 입력해주세요!");
+
+  const normalize = t => t.replace(/\s/g, "").toLowerCase();
+  if (normalize(input) === normalize(p.a)) {
+    result.textContent = "맞았습니다!";
+    result.style.color = "#16a34a";
+  } else {
+    result.textContent = `틀렸습니다! (정답: ${p.a})`;
+    result.style.color = "#dc2626";
+  }
+
+  document.getElementById("snackImage").classList.add("hidden");
+  document.getElementById("answerImage").src = p.reveal;
+  document.getElementById("answerImage").classList.remove("hidden");
+
+  document.getElementById("answerSection").style.display = "none";
+  document.getElementById("nextSnackBtn").classList.remove("hidden");
+};
+
+document.getElementById("nextSnackBtn").onclick = () => {
+  currentSnack++;
+  if (currentSnack >= snackProblems.length) {
+    alert("모든 과자 문제 완료!");
+    showScreen("category-screen");
+  } else {
+    loadSnack();
+  }
+};
+
+document.getElementById("backToCategoryBtn2").onclick = () =>
+  showScreen("category-screen");
+
+/* =============================
+   동물 맞히기
+============================= */
+const animalData = [
+  { q: "images/anim/acau_q.JPG", a: "악어거북", reveal: "images/anim/acau_a.JPG" },
+  { q: "images/anim/adeli_q.JPG", a: "아델리펭귄", reveal: "images/anim/adeli_a.JPG" },
+  { q: "images/anim/agi_q.JPG", a: "애기웜뱃", reveal: "images/anim/agi_a.JPG" },
+  { q:"images/anim/ahob_q.JPG", a:"아홉띠아르마딜로", reveal:"images/anim/ahob_a.JPG" },
+  { q:"images/anim/alac_q.JPG", a:"알락꼬리고양이", reveal:"images/anim/alac_a.JPG" },
+  { q:"images/anim/andes_q.JPG", a:"아메리카검은댕기해오라기", reveal:"images/anim/andes_a.JPG" },
+  { q:"images/anim/angkarana_q.JPG", a:"안데스산고양이", reveal:"images/anim/angkarana_a.JPG" },
+  { q:"images/anim/angung_q.JPG", a:"앙카라나족제비여우원숭이", reveal:"images/anim/angung_a.JPG" },
+  { q:"images/anim/bacg_q.JPG", a:"남방안경영원", reveal:"images/anim/bacg_a.JPG" },
+  { q:"images/anim/bacge_q.JPG", a:"박쥐귀여우", reveal:"images/anim/bacge_a.JPG" },
+  { q:"images/anim/bachu_q.JPG", a:"배추흰나비", reveal:"images/anim/bachu_a.JPG" },
+  { q:"images/anim/bau_q.JPG", a:"노랑반점바위너구리", reveal:"images/anim/bau_a.JPG" },
+  { q:"images/anim/bonith_q.JPG", a:"보닛헤드귀상어", reveal:"images/anim/bonith_a.JPG" },
+  { q:"images/anim/buchi_q.JPG", a:"자메이카벌잡이부치새", reveal:"images/anim/buchi_a.JPG" },
+  { q:"images/anim/bulgam_q.JPG", a:"벌감펭", reveal:"images/anim/bulgam_a.JPG" },
+  { q:"images/anim/bulgend_q.JPG", a:"붉은다리개구리", reveal:"images/anim/bulgend_a.JPG" },
+  { q:"images/anim/burij_q.JPG", a:"노랑부리저어새", reveal:"images/anim/burij_a.JPG" },
+  { q:"images/anim/cano_q.JPG", a:"카노두더지", reveal:"images/anim/cano_a.JPG" },
+  { q:"images/anim/carive_q.JPG", a:"카리브암초꼴뚜기", reveal:"images/anim/carive_a.JPG" },
+  { q:"images/anim/casp_q.JPG", a:"카스피채찍뱀", reveal:"images/anim/casp_a.JPG" },
+  { q:"images/anim/cham_q.JPG", a:"참게", reveal:"images/anim/cham_a.JPG" },
+  { q:"images/anim/chamm_q.JPG", a:"참문어", reveal:"images/anim/chamm_a.JPG" },
+  { q:"images/anim/chorug_q.JPG", a:"초록나무비단뱀", reveal:"images/anim/chorug_a.JPG" },
+  { q:"images/anim/codcod_q.JPG", a:"코드코드", reveal:"images/anim/codcod_a.JPG" },
+  { q:"images/anim/cuten_q.JPG", a:"커튼원양해파리", reveal:"images/anim/cuten_a.JPG" },
+  { q:"images/anim/ddangdoa_q.JPG", a:"땅돼지", reveal:"images/anim/ddangdoa_a.JPG" },
+  { q:"images/anim/dongsu_q.JPG", a:"동수구리", reveal:"images/anim/dongsu_a.JPG" },
+  { q:"images/anim/dotom_q.JPG", a:"도톰꼬리도마뱀붙이", reveal:"images/anim/dotom_a.JPG" },
+  { q:"images/anim/dotori_q.JPG", a:"도토리귀고둥", reveal:"images/anim/dotori_a.JPG" },
+  { q:"images/anim/dumbul_q.JPG", a:"덤불해오라기", reveal:"images/anim/dumbul_a.JPG" },
+  { q:"images/anim/g_q.JPG", a:"사향쥐캥거루", reveal:"images/anim/g_a.JPG" },
+  { q:"images/anim/gabir_q.JPG", a:"가비알", reveal:"images/anim/gabir_a.JPG" },
+  { q:"images/anim/galsacu_q.JPG", a:"갈색얼거니새", reveal:"images/anim/galsacu_a.JPG" },
+  { q:"images/anim/gami_q.JPG", a:"주머니개미핥기", reveal:"images/anim/gami_a.JPG" },
+  { q:"images/anim/garo_q.JPG", a:"가로줄무늬자칼", reveal:"images/anim/garo_a.JPG" },
+  { q:"images/anim/gin_q.JPG", a:"긴꼬리왈라비", reveal:"images/anim/gin_a.JPG" },
+  { q:"images/anim/gmgang_q.JPG", a:"금강앵무", reveal:"images/anim/gmgang_a.JPG" },
+  { q:"images/anim/gmnun_q.JPG", a:"그문쇠올빼미", reveal:"images/anim/gmnun_a.JPG" },
+  { q:"images/anim/goni_q.JPG", a:"기러기아과", reveal:"images/anim/goni_a.JPG" },
+  { q:"images/anim/goun_q.JPG", a:"고운점박이푸른부전나비", reveal:"images/anim/goun_a.JPG" },
+  { q:"images/anim/goyange_q.JPG", a:"아시아황금고양이", reveal:"images/anim/goyange_a.JPG" },
+  { q:"images/anim/gripon_q.JPG", a:"그리폰독수리", reveal:"images/anim/gripon_a.JPG" },
+  { q:"images/anim/gubug_q.JPG", a:"늪가로목거북", reveal:"images/anim/gubug_a.JPG" },
+  { q:"images/anim/guisin_q.JPG", a:"북아메리카귀신소쩍새", reveal:"images/anim/guisin_a.JPG" },
+  { q:"images/anim/gurm_q.JPG", a:"구름표범", reveal:"images/anim/gurm_a.JPG" },
+  { q:"images/anim/hinco_q.JPG", a:"흰코사향고양이", reveal:"images/anim/hinco_a.JPG" },
+  { q:"images/anim/hindeng_q.JPG", a:"고산대머리수리속", reveal:"images/anim/hindeng_a.JPG" },
+  { q:"images/anim/hinul_q.JPG", a:"백로속", reveal:"images/anim/hinul_a.JPG" },
+  { q:"images/anim/horangn_q.JPG", a:"절지동물문", reveal:"images/anim/horangn_a.JPG" },
+  { q:"images/anim/hu_q.JPG", a:"얼룩푸른혀도마뱀", reveal:"images/anim/hu_a.JPG" },
+  { q:"images/anim/jacengo_q.JPG", a:"작은고스도치홍어", reveal:"images/anim/jacengo_a.JPG" },
+  { q:"images/anim/jan_q.JPG", a:"잔점박이물범", reveal:"images/anim/jan_a.JPG" },
+  { q:"images/anim/jangnims_q.JPG", a:"수염상어목", reveal:"images/anim/jangnims_a.JPG" },
+  { q:"images/anim/jenet_q.JPG", a:"붉은점박이제넷", reveal:"images/anim/jenet_a.JPG" },
+  { q:"images/anim/jirenge_q.JPG", a:"이베리아지렁이도마뱀", reveal:"images/anim/jirenge_a.JPG" },
+  { q:"images/anim/jugle_q.JPG", a:"척삭동물문", reveal:"images/anim/jugle_a.JPG" },
+  { q:"images/anim/jumbace_q.JPG", a:"하이에나과", reveal:"images/anim/jumbace_a.JPG" },
+  { q:"images/anim/jummug_q.JPG", a:"네발나비과", reveal:"images/anim/jummug_a.JPG" },
+  { q:"images/anim/kanggu_q.JPG", a:"캥거루쥐", reveal:"images/anim/kanggu_a.JPG" },
+  { q:"images/anim/macaroni_q.JPG", a:"마카로니펭귄", reveal:"images/anim/macaroni_a.JPG" },
+  { q:"images/anim/mal_q.JPG", a:"말사슴", reveal:"images/anim/mal_a.JPG" },
+  { q:"images/anim/malddong_q.JPG", a:"붉은꼬리말똥가리", reveal:"images/anim/malddong_a.JPG" },
+  { q:"images/anim/mangchi_q.JPG", a:"망치머리황새", reveal:"images/anim/mangchi_a.JPG" },
+  { q:"images/anim/moggule_q.JPG", a:"목걸이증부리", reveal:"images/anim/moggule_a.JPG" },
+  { q:"images/anim/mongus_q.JPG", a:"큰띠몽구스", reveal:"images/anim/mongus_a.JPG" },
+  { q:"images/anim/moniddo_q.JPG", a:"모니또델몬토", reveal:"images/anim/moniddo_a.JPG" },
+  { q:"images/anim/mora_q.JPG", a:"모래고양이", reveal:"images/anim/mora_a.JPG" },
+  { q:"images/anim/mugda_q.JPG", a:"먹대가리비단뱀", reveal:"images/anim/mugda_a.JPG" },
+  { q:"images/anim/mul_q.JPG", a:"물닭", reveal:"images/anim/mul_a.JPG" },
+  { q:"images/anim/mutjange_q.JPG", a:"큰멋쟁이나비", reveal:"images/anim/mutjange_a.JPG" },
+  { q:"images/anim/namu_q.JPG", a:"린네두발가락나무늘보", reveal:"images/anim/namu_a.JPG" },
+  { q:"images/anim/orino_q.JPG", a:"오리노코악어", reveal:"images/anim/orino_a.JPG" },
+  { q:"images/anim/palma_q.JPG", a:"팔마왈라비", reveal:"images/anim/palma_a.JPG" },
+  { q:"images/anim/paloba_q.JPG", a:"필로바테스테리빌리스", reveal:"images/anim/paloba_a.JPG" },
+  { q:"images/anim/paran_q.JPG", a:"파란고리문어", reveal:"images/anim/paran_a.JPG" },
+  { q:"images/anim/posa_q.JPG", a:"포사", reveal:"images/anim/posa_a.JPG" },
+  { q:"images/anim/pyobum_q.JPG", a:"표범폐어", reveal:"images/anim/pyobum_a.JPG" },
+  { q:"images/anim/rdavra_q.JPG", a:"알다브라코끼리거북", reveal:"images/anim/rdavra_a.JPG" },
+  { q:"images/anim/saki_q.JPG", a:"흰얼굴사키원숭이", reveal:"images/anim/saki_a.JPG" },
+  { q:"images/anim/sanchung_q.JPG", a:"산청개구리", reveal:"images/anim/sanchung_a.JPG" },
+  { q:"images/anim/sangg_q.JPG", a:"큰생쥐귀박쥐", reveal:"images/anim/sangg_a.JPG" },
+  { q:"images/anim/sanho_q.JPG", a:"기둥산호", reveal:"images/anim/sanho_a.JPG" },
+  { q:"images/anim/silbu_q.JPG", a:"실버아로와나", reveal:"images/anim/silbu_a.JPG" },
+  { q:"images/anim/smail_q.JPG", a:"웃는개구리", reveal:"images/anim/smail_a.JPG" },
+  { q:"images/anim/soop_q.JPG", a:"척삭동물문", reveal:"images/anim/soop_a.JPG" },
+  { q:"images/anim/subu_q.JPG", a:"서부나무타기너구리", reveal:"images/anim/subu_a.JPG" },
+  { q:"images/anim/taz_q.JPG", a:"태즈메이니아데빌", reveal:"images/anim/taz_a.JPG" },
+  { q:"images/anim/tungso_q.JPG", a:"은상어목", reveal:"images/anim/tungso_a.JPG" },
+  { q:"images/anim/umsac_q.JPG", a:"염색독개구리", reveal:"images/anim/umsac_a.JPG" }
+];
+
+let animalProblems = [];
+let currentAnimal = 0;
+
+document.getElementById("scienceBtn").onclick = () => {
+  animalProblems = shuffleArray(animalData.slice());
+  currentAnimal = 0;
+  showScreen("animal-game");
+  loadAnimal();
+};
 
 function loadAnimal() {
   const p = animalProblems[currentAnimal];
   document.getElementById("animalImage").src = p.q;
   document.getElementById("animalAnswerImage").classList.add("hidden");
+  document.getElementById("animalImage").classList.remove("hidden");
   document.getElementById("animalResult").textContent = "";
   document.getElementById("animalAnswerInput").value = "";
-  document.getElementById("nextAnimalBtn").classList.add("hidden");
   document.getElementById("animalAnswerSection").style.display = "block";
-  document.getElementById("animalAnswerInput").focus();
-  document.getElementById("animalImage").classList.remove("hidden");
+  document.getElementById("nextAnimalBtn").classList.add("hidden");
 }
 
-    function checkAnimalAnswer(){
-      const p = animalProblems[currentAnimal];
-      const userInput = document.getElementById("animalAnswerInput").value.trim();
-      const result = document.getElementById("animalResult");
-      if(!userInput) return alert("정답을 입력해주세요!");
-      const normalize = s => s.replace(/\s/g,"").toLowerCase();
-      if(normalize(userInput) === normalize(p.a)){
-        result.textContent = "맞았습니다!";
-        result.style.color = "#16a34a";
-      } else {
-        result.textContent = `틀렸습니다! (정답: ${p.a})`;
-        result.style.color = "#dc2626";
-      }
-      document.getElementById("animalImage").classList.add("hidden");
-      document.getElementById("animalAnswerImage").src = p.reveal;
-      document.getElementById("animalAnswerImage").classList.remove("hidden");
-      document.getElementById("animalAnswerSection").style.display = "none";
-      document.getElementById("nextAnimalBtn").classList.remove("hidden");
-    }
+document.getElementById("animalCheckBtn").onclick = () => {
+  const p = animalProblems[currentAnimal];
+  const input = document.getElementById("animalAnswerInput").value.trim();
+  const result = document.getElementById("animalResult");
 
-    document.getElementById("animalCheckBtn").addEventListener("click", checkAnimalAnswer);
-    document.getElementById("animalAnswerInput").addEventListener("keydown", e=>{
-      if(e.key==="Enter") checkAnimalAnswer();
-    });
+  if (!input) return alert("정답을 입력해주세요!");
 
-    document.getElementById("nextAnimalBtn").addEventListener("click", ()=>{
-      currentAnimal++;
-      if(currentAnimal >= animalProblems.length){
-        alert("모든 문제를 풀었습니다! ");
-        showScreen("category-screen");
-      } else {
-        loadAnimal();
-      }
-    });
+  const normalize = t => t.replace(/\s/g, "").toLowerCase();
 
-    document.getElementById("backToCategoryBtnAnimal").addEventListener("click", ()=>showScreen("category-screen"));
+  if (normalize(input) === normalize(p.a)) {
+    result.textContent = "맞았습니다!";
+    result.style.color = "#16a34a";
+  } else {
+    result.textContent = `틀렸습니다! (정답: ${p.a})`;
+    result.style.color = "#dc2626";
+  }
 
-    // 숫자야구
-    let answer=[], tries=0, maxTries=6;
-    document.getElementById("mathLogicBtn").addEventListener("click", ()=>{
-      showScreen("game-screen");
-      startGame();
-    });
-    document.getElementById("backToCategoryBtn").addEventListener("click", ()=>showScreen("category-screen"));
-    document.getElementById("checkBtn").addEventListener("click", play);
-    function startGame(){
-      answer=[]; tries=0;
-      document.getElementById('triesInfo').textContent=`현재 시도: 0 / ${maxTries}`;
-      document.getElementById('log').innerHTML=""; document.getElementById('userInput').value="";
-      while(answer.length<4){
-        const num=Math.floor(Math.random()*10);
-        if(!answer.includes(num)) answer.push(num);
-      }
-      console.log("정답:", answer.join(''));
-    }
-    function play(){
-      const input = document.getElementById('userInput').value.trim();
-      const log = document.getElementById('log');
-      const info = document.getElementById('triesInfo');
-      if(input.length!==4 || new Set(input).size!==4 || isNaN(input)){
-        alert("서로 다른 숫자 4개를 입력해주세요!");
-        return;
-      }
-      tries++;
-      info.textContent=`현재 시도: ${tries} / ${maxTries}`;
-      const guess = input.split('').map(Number);
-      let strike=0, ball=0;
-      for(let i=0;i<4;i++){
-        if(guess[i]===answer[i]) strike++;
-        else if(answer.includes(guess[i])) ball++;
-      }
-      const result = `${input} → ${strike}S ${ball}B`;
-      const li=document.createElement('li');
-      li.textContent=result;
-      log.prepend(li);
-      if(strike===4){
-        setTimeout(()=>{ alert(`정답입니다! (${tries}번 만에 맞히셨습니다!)`); showScreen("category-screen"); }, 100);
-        return;
-      }
-      if(tries>=maxTries){
-        setTimeout(()=>{ alert(`실패! 정답은 ${answer.join('')} 입니다.`); showScreen("category-screen"); }, 100);
-      }
-      document.getElementById('userInput').value="";
-    }
+  document.getElementById("animalImage").classList.add("hidden");
+  document.getElementById("animalAnswerImage").src = p.reveal;
+  document.getElementById("animalAnswerImage").classList.remove("hidden");
 
-    // 초기 화면
-    showScreen("main-screen");
-  </script>
+  document.getElementById("animalAnswerSection").style.display = "none";
+  document.getElementById("nextAnimalBtn").classList.remove("hidden");
+};
+
+document.getElementById("nextAnimalBtn").onclick = () => {
+  currentAnimal++;
+  if (currentAnimal >= animalProblems.length) {
+    alert("모든 동물 문제 완료!");
+    showScreen("category-screen");
+  } else {
+    loadAnimal();
+  }
+};
+
+document.getElementById("backToCategoryBtnAnimal").onclick = () =>
+  showScreen("category-screen");
+
+/* =============================
+   대학교 맞히기 데이터
+============================= */
+const univData = [
+  { q: "images/school/buc_q.JPG", a: "부천대학교", alt: ["부천대"], reveal: "images/school/buc_a.JPG" },
+  { q: "images/school/cau_q.JPG", a: "중앙대학교", alt: ["중앙대"], reveal: "images/school/cau_a.JPG" },
+  { q: "images/school/cau2_q.JPG", a: "중앙대학교", alt: ["중앙대"], reveal: "images/school/cau2_a.JPG" },
+  { q: "images/school/bu_q.JPG", a: "부산대학교", alt: ["부산대","부대"], reveal: "images/school/bu_a.JPG" },
+  { q: "images/school/bu2_q.JPG", a: "부산대학교", alt: ["부산대","부대"], reveal: "images/school/bu2_a.JPG" },
+  { q: "images/school/chungn_q.JPG", a: "충남대학교", alt: ["충남대"], reveal: "images/school/chungn_a.JPG" },
+  { q: "images/school/deu_q.JPG", a: "동의대학교", alt: ["동의대"], reveal: "images/school/deu_a.JPG" },
+  { q: "images/school/dku2_q.JPG", a: "단국대학교", alt: ["단국대","단대"], reveal: "images/school/dku2_a.JPG" },
+  { q: "images/school/dku3_q.JPG", a: "단국대학교", alt: ["단국대","단대"], reveal: "images/school/dku3_a.JPG" },
+  { q: "images/school/eulj_q.JPG", a: "을지대학교", alt: ["을지대"], reveal: "images/school/eulj_a.JPG" },
+  { q: "images/school/gac_q.JPG", a: "가천대학교", alt: ["가천대"], reveal: "images/school/gac_.JPG" },
+  { q: "images/school/gac2_q.JPG", a: "가천대학교", alt: ["가천대"], reveal: "images/school/gac2_a.JPG" },
+  { q: "images/school/hany_q.JPG", a: "한양대학교", alt: ["한양대"], reveal: "images/school/hany_a.JPG" },
+  { q: "images/school/hany2_q.JPG", a: "한양대학교", alt: ["한양대"], reveal: "images/school/hany2_a.JPG" },
+  { q: "images/school/hany3_q.JPG", a: "한양대학교", alt: ["한양대"], reveal: "images/school/hany3_a.JPG" },
+  { q: "images/school/hufs_q.JPG", a: "한국외국어대학교", alt: ["외대"], reveal: "images/school/hufs_a.JPG" },
+  { q: "images/school/ihs_q.JPG", a: "서강대학교", alt: ["서강대"], reveal: "images/school/ihs_a.JPG" },
+  { q: "images/school/ihs2_q.JPG", a: "서강대학교", alt: ["서강대"], reveal: "images/school/ihs2_a.JPG" },
+  { q: "images/school/inc_q.JPG", a: "인천대학교", alt: ["인천대"], reveal: "images/school/inc_a.JPG" },
+  { q: "images/school/inc2_q.JPG", a: "인천대학교", alt: ["인천대"], reveal: "images/school/inc2_a.JPG" },
+  { q: "images/school/inh_q.JPG", a: "인하대학교", alt: ["인하대"], reveal: "images/school/inh_a.JPG" },
+  { q: "images/school/inh2_q.JPG", a: "인하대학교", alt: ["인하대"], reveal: "images/school/inh2_a.JPG" },
+  { q: "images/school/k_q.JPG", a: "고려대학교", alt: ["고려대","고대"], reveal: "images/school/k_a.JPG" },
+  { q: "images/school/k2_q.JPG", a: "고려대학교", alt: ["고려대","고대"], reveal: "images/school/k2_a.JPG" },
+  { q: "images/school/kgu_q.JPG", a: "경기대학교",alt: ["경기대"], reveal: "images/school/kgu_a.JPG" },
+  { q: "images/school/kmu_q.JPG", a: "국민대학교",alt: ["국민대"], reveal: "images/school/kmu_a.JPG" },
+  { q: "images/school/kmu2_q.JPG", a: "국민대학교",alt: ["국민대"], reveal: "images/school/kmu2_a.JPG" },
+  { q: "images/school/knu_q.JPG", a: "강원대학교",alt: ["강원대","강대"], reveal: "images/school/knu_a.JPG" },
+  { q: "images/school/knue_q.JPG", a: "한국교원대학교", alt: ["한국교원대","교원대"], reveal: "images/school/knue_a.JPG" },
+  { q: "images/school/ksnu_q.JPG", a: "국립군산대학교", alt: ["군산대","군산대학교"], reveal: "images/school/ksnu_a.JPG" },
+  { q: "images/school/ku_q.JPG", a: "건국대학교", alt: ["건국대","건대"], reveal: "images/school/ku_a.JPG" },
+  { q: "images/school/ku2_q.JPG", a: "건국대학교",alt: ["건국대","건대"], reveal: "images/school/ku2_a.JPG" },
+  { q: "images/school/kyungh_q.JPG", a: "경희대학교",alt: ["경희대"], reveal: "images/school/kyungh_a.JPG" },
+  { q: "images/school/kyungh2_q.JPG", a: "경희대학교",alt: ["경희대"], reveal: "images/school/kyungh2_a.JPG" },
+  { q: "images/school/s_q.JPG", a: "서울대학교",alt: ["서울대"], reveal: "images/school/s_a.JPG" },
+  { q: "images/school/s2_q.JPG", a: "서울대학교",alt: ["서울대"], reveal: "images/school/s2_a.JPG" },
+  { q: "images/school/sist_q.JPG", a: "서울과학기술대학교",alt: ["서울과기대"], reveal: "images/school/sist_a.JPG" },
+  { q: "images/school/sist2_q.JPG", a: "서울과학기술대학교",alt: ["서울과기대"], reveal: "images/school/sist2_a.JPG" },
+  { q: "images/school/sungk_q.JPG", a: "성균관대학교",alt: ["성균관대","성대"], reveal: "images/school/sungk_a.JPG" },
+  { q: "images/school/sungk2_q.JPG", a: "성균관대학교",alt: ["성균관대","성대"], reveal: "images/school/sungk2_a.JPG" },
+  { q: "images/school/y_q.JPG", a: "연세대학교",alt: ["연세대","연대"], reveal: "images/school/y_a.JPG" },
+  { q: "images/school/y2_q.JPG", a: "연세대학교",alt: ["연세대","연대"], reveal: "images/school/y2_a.JPG" }
+
+];
+
+/* =============================
+   창의·두뇌 퍼즐 (폰트 + 대학교 랜덤)
+============================= */
+const creativeBtn = document.getElementById("creativeBtn");
+
+let creativeProblems = [];
+let currentCreative = 0;
+let currentUnivProblem = null;
+
+/* 전체 문제 구성: 폰트 1 + 대학교 5 → 총 6개 */
+const creativeData = [
+  { type: "font" },
+  ...univData.map(u => ({ type: "univ", ...u }))
+];
+
+creativeBtn.onclick = () => {
+  creativeProblems = shuffleArray(creativeData.slice());
+  currentCreative = 0;
+  loadCreative();
+};
+
+function loadCreative() {
+  const p = creativeProblems[currentCreative];
+
+  if (p.type === "font") {
+    showScreen("font-game");
+    startFontGame();
+  } else {
+    currentUnivProblem = p;
+    showScreen("univ-game");
+    loadUniv();
+  }
+}
+
+function nextCreative() {
+  currentCreative++;
+  if (currentCreative >= creativeProblems.length) {
+    alert("모든 문제 완료!");
+    showScreen("category-screen");
+    return;
+  }
+  loadCreative();
+}
+
+/* =============================
+   폰트 맞히기
+============================= */
+let fontCorrectIndex = null;
+let fontSelectedIndex = null;
+
+function startFontGame() {
+  const container = document.getElementById("lettersContainer");
+  container.innerHTML = "";
+
+  fontCorrectIndex = Math.floor(Math.random() * 12);
+  fontSelectedIndex = null;
+
+  for (let i = 0; i < 12; i++) {
+    const span = document.createElement("span");
+    span.textContent = String.fromCharCode(65 + i);
+    span.className = i === fontCorrectIndex ? "helvetica" : "other";
+
+    span.onclick = () => {
+      [...container.children].forEach(s => s.style.textDecoration = "none");
+      span.style.textDecoration = "underline";
+      fontSelectedIndex = i;
+    };
+
+    container.appendChild(span);
+  }
+
+  const msg = document.getElementById("fontGuessResult");
+  msg.textContent = "글자 중 Helvetica 글자를 찾으세요!";
+  msg.style.color = "#1e293b";
+
+  document.getElementById("fontCheckBtn").classList.remove("hidden");
+  document.getElementById("nextFontBtn").classList.add("hidden");
+}
+
+document.getElementById("fontCheckBtn").onclick = () => {
+  if (fontSelectedIndex === null) return alert("글자를 선택하세요!");
+
+  const msg = document.getElementById("fontGuessResult");
+  const container = document.getElementById("lettersContainer");
+
+  if (fontSelectedIndex === fontCorrectIndex) {
+    msg.textContent = "맞았습니다!";
+    msg.style.color = "#16a34a";
+  } else {
+    msg.textContent = `틀렸습니다! 정답은 "${String.fromCharCode(65 + fontCorrectIndex)}" 입니다.`;
+    msg.style.color = "#dc2626";
+    container.children[fontCorrectIndex].style.textDecoration = "underline";
+  }
+
+  document.getElementById("fontCheckBtn").classList.add("hidden");
+  document.getElementById("nextFontBtn").classList.remove("hidden");
+};
+
+document.getElementById("nextFontBtn").onclick = nextCreative;
+
+/* =============================
+   대학교 맞히기
+============================= */
+function loadUniv() {
+  const p = currentUnivProblem;
+  document.getElementById("univImage").src = p.q;
+  document.getElementById("univImage").classList.remove("hidden");
+
+  document.getElementById("univAnswerImage").classList.add("hidden");
+  document.getElementById("univAnswerInput").value = "";
+  document.getElementById("univResult").textContent = "";
+  document.getElementById("univAnswerSection").style.display = "block";
+  document.getElementById("nextUnivBtn").classList.add("hidden");
+}
+
+document.getElementById("univCheckBtn").onclick = () => {
+  const p = currentUnivProblem;
+  const input = document.getElementById("univAnswerInput").value.trim();
+  const result = document.getElementById("univResult");
+
+  if (!input) return alert("정답을 입력하세요!");
+
+  const normalize = t => t.replace(/\s/g, "").toLowerCase();
+
+  if (normalize(input) === normalize(p.a)) {
+    result.textContent = "맞았습니다!";
+    result.style.color = "#16a34a";
+  } else {
+    result.textContent = `틀렸습니다! (정답: ${p.a})`;
+    result.style.color = "#dc2626";
+  }
+
+  document.getElementById("univImage").classList.add("hidden");
+  document.getElementById("univAnswerImage").src = p.reveal;
+  document.getElementById("univAnswerImage").classList.remove("hidden");
+
+  document.getElementById("univAnswerSection").style.display = "none";
+  document.getElementById("nextUnivBtn").classList.remove("hidden");
+};
+
+document.getElementById("nextUnivBtn").onclick = nextCreative;
+
+/* 뒤로가기들 */
+document.getElementById("backToCategoryBtnFont").onclick =
+document.getElementById("backToCategoryBtnUniv").onclick =
+document.getElementById("backToCategoryBtnAnimal").onclick =
+document.getElementById("backToCategoryBtn2").onclick = () => {
+  showScreen("category-screen");
+};
+
+/* 초기 시작 화면 */
+showScreen("main-screen");
+</script>
+
 </body>
 </html>
