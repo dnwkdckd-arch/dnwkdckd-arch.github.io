@@ -125,7 +125,8 @@
     #snack-game img,
     #animal-game img,
     #univ-game img,
-    #scoville-game img {
+    #scoville-game img,
+    #ticker-game img {
       max-width: 450px;
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -184,6 +185,21 @@
       margin-top: 15px;
       font-weight: bold;
     }
+      /* 티커 가운데 정렬 */
+  #ticker-game {
+  display: flex; /* !important 제거! */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+}
+
+  #ticker-game img {
+    display: block;
+    margin: 20px auto;
+    max-width: 450px;
+    border-radius: 15px;
+  }
   </style>
 </head>
 <body>
@@ -227,8 +243,8 @@
     </div>
 
     <div class="tooltip-container">
-      <button>경제·금융</button>
-      <span class="tooltip">환율, 주식, 세금, 통화</span>
+      <button id="financeBtn">경제·금융</button>
+      <span class="tooltip">티커, 환율, 주식 등</span>
     </div>
 
     <div class="tooltip-container">
@@ -340,14 +356,32 @@
   <button id="backToCategoryBtnAnimal">⬅ 카테고리로 돌아가기</button>
 </div>
 
+<!-- 경제·금융 : 티커 맞히기 화면 -->
+<div id="ticker-game" class="screen">
+  <h1>티커 보고 회사 맞히기</h1>
+  <p id="tickerQuestion" class="info"></p>
+  <p id="tickerHint" class="small"></p>
+
+  <div id="tickerAnswerSection">
+    <input id="tickerAnswerInput" type="text" placeholder="회사 이름 입력" />
+    <button id="tickerCheckBtn">확인</button>
+  </div>
+
+  <p id="tickerResult" class="info"></p>
+  <img id="tickerImage" class="hidden" src="" alt="" />
+
+  <button id="nextTickerBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtnTicker">⬅ 카테고리로 돌아가기</button>
+</div>
+
 <script>
-/* 공통 화면 전환 */
+/* 공통 화면 전환*/
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
   document.getElementById(id).style.display = (id === "main-screen") ? "flex" : "block";
 }
 
-/* 섞기 함수 */
+/* 섞기 함수*/
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -427,11 +461,10 @@ function play() {
   document.getElementById("userInput").value = "";
 }
 
-/* 숫자야구 뒤로가기 */
 document.getElementById("backToCategoryBtn").onclick = () =>
   showScreen("category-screen");
 
-/* 생활상식 : 과자 + 스코빌 랜덤 */
+/* 생활상식 : 과자 + 스코빌 랜덤*/
 const snackData = [
   { q: "images/ChocoSongi_q.JPG", a: "초코송이", reveal: "images/ChocoSongi_a.JPG" },
   { q: "images/pocachip_q.JPG", a: "포카칩오리지널", reveal: "images/pocachip_a.JPG" },
@@ -599,7 +632,7 @@ document.getElementById("nextScovilleBtn").onclick = () => {
 document.getElementById("backToCategoryBtnScoville").onclick = () =>
   showScreen("category-screen");
 
-/* 동물 맞히기*/
+/* 동물 맞히기 */
 const animalData = [
   { q: "images/anim/acau_q.JPG", a: "악어거북", reveal: "images/anim/acau_a.JPG" },
   { q: "images/anim/adeli_q.JPG", a: "아델리펭귄", reveal: "images/anim/adeli_a.JPG" },
@@ -842,7 +875,7 @@ function nextCreative() {
   loadCreative();
 }
 
-/* 폰트 맞히기 */
+/*  폰트 맞히기 */
 let fontCorrectIndex = null;
 let fontSelectedIndex = null;
 
@@ -899,7 +932,7 @@ document.getElementById("fontCheckBtn").onclick = () => {
 
 document.getElementById("nextFontBtn").onclick = nextCreative;
 
-/* 대학교 맞히기*/
+/* 대학교 맞히기 */
 function loadUniv() {
   const p = currentUnivProblem;
   document.getElementById("univImage").src = p.q;
@@ -954,6 +987,132 @@ document.getElementById("backToCategoryBtnScoville").onclick = () => {
   showScreen("category-screen");
 };
 
+/* 경제·금융 : 티커 맞히기*/
+
+const tickerData = [
+{ ticker: "MNST", answer: "몬스터", hint: "에너지", img: "images/com/MNST.JPG" },
+{ ticker: "K",    answer: "켈로그", hint: "콘푸로스트 프링글스", img: "images/com/K.JPG" },
+{ ticker: "INTC", answer: "인텔", hint: "라이젠", img: "images/com/INTC.JPG" },
+{ ticker: "HLT", answer: "힐튼호텔", hint: "패리스", img: "images/com/HLT.JPG" },
+{ ticker: "MCD", answer: "맥도날드", hint: "DT", img: "images/com/MCD.JPG" },
+{ ticker: "BLK", answer: "블랙록", hint: "ETF", img: "images/com/BLK.JPG" },
+{ ticker: "F", answer: "포드", hint: "페라리", img: "images/com/F.JPG" },
+{ ticker: "YUM", answer: "얌브랜즈", hint: "KFC, 피자헛", img: "images/com/YUM.JPG" },
+{ ticker: "RBI", answer: "레스토랑브랜즈", hint: "버거킹", img: "images/com/RBI.JPG" },
+{ ticker: "EA", answer: "일렉트로닉아츠", hint: "FIFA, 심즈, 배틀필드", img: "images/com/EA.JPG" },
+{ ticker: "DIS", answer: "디즈니", hint: "월트", img: "images/com/DIS.JPG" },
+{ ticker: "GM", answer: "제너럴모터스", hint: "쉐보레, 캐딜락", img: "images/com/GM.JPG" },
+{ ticker: "KHC", answer: "크래프트하인즈", hint: "케첩", img: "images/com/KHC.JPG" },
+{ ticker: "MDLZ", answer: "몬델리즈", hint: "오레오", img: "images/com/MDLZ.JPG" },
+{ ticker: "GIS", answer: "제너럴밀스", hint: "하겐다즈", img: "images/com/GIS.JPG" },
+{ ticker: "RL", answer: "랄프로렌", hint: "폴로", img: "images/com/RL.JPG" },
+{ ticker: "SNE", answer: "소니", hint: "플스", img: "images/com/SNE.JPG" },
+{ ticker: "BKNG", answer: "부킹홀딩스", hint: "아고다", img: "images/com/BKNG.JPG" },
+{ ticker: "KMB", answer: "킴벌리클라크", hint: "하기스", img: "images/com/KMB.JPG" },
+{ ticker: "UL", answer: "유니레버", hint: "도브, 립톤, 벤앤제리", img: "images/com/UL.JPG" },
+{ ticker: "TTWO", answer: "테이크투", hint: "GTA", img: "images/com/TTWO.JPG" },
+{ ticker: "WBD", answer: "워너브라더스디스커버리", hint: "DC, 해리포터", img: "images/com/WBD.JPG" },
+{ ticker: "PYPL", answer: "페이팔", hint: "토스", img: "images/com/PYPL.JPG" },
+{ ticker: "BF-B", answer: "브라운포맨", hint: "잭다니엘", img: "images/com/BF-B.JPG" },
+{ ticker: "H", answer: "하얏트", hint: "그랜드", img: "images/com/H.JPG" },
+{ ticker: "CMCSA", answer: "컴캐스트", hint: "유니버설, 미니언", img: "images/com/CMCSA.JPG" },
+{ ticker: "DNUT", answer: "크리스피크림", hint: "도넛", img: "images/com/DNUT.JPG" },
+{ ticker: "PM", answer: "필립모리스", hint: "아이코스, 말보로", img: "images/com/PM.JPG" }
+
+];
+
+let tickerProblems = [];
+let currentTicker = 0;
+
+document.getElementById("financeBtn").onclick = () => {
+  tickerProblems = shuffleArray(tickerData.slice());
+  currentTicker = 0;
+  showScreen("ticker-game");
+  loadTicker();
+};
+
+function loadTicker() {
+  const p = tickerProblems[currentTicker];
+  if (!p) {
+    alert("문제가 없습니다.");
+    showScreen("category-screen");
+    return;
+  }
+
+  document.getElementById("tickerQuestion").textContent = `티커: ${p.ticker}`;
+  document.getElementById("tickerHint").textContent = `힌트: ${p.hint}`;
+
+  document.getElementById("tickerAnswerInput").value = "";
+  document.getElementById("tickerResult").textContent = "";
+  document.getElementById("tickerImage").classList.add("hidden");
+
+  document.getElementById("tickerAnswerSection").style.display = "block";
+  document.getElementById("nextTickerBtn").classList.add("hidden");
+  document.getElementById("tickerAnswerInput").focus();
+}
+
+document.getElementById("tickerCheckBtn").onclick = () => {
+  const p = tickerProblems[currentTicker];
+  if (!p) return;
+
+  const input = document.getElementById("tickerAnswerInput").value.trim();
+  const result = document.getElementById("tickerResult");
+
+  if (!input) {
+    alert("정답을 입력해주세요!");
+    return;
+  }
+
+  const normalize = t => t.replace(/\s/g, "").toLowerCase();
+  if (normalize(input) === normalize(p.answer)) {
+    result.textContent = "맞았습니다!";
+    result.style.color = "#16a34a";
+  } else {
+    result.textContent = `틀렸습니다! (정답: ${p.answer})`;
+    result.style.color = "#dc2626";
+  }
+
+  document.getElementById("tickerImage").src = p.img;
+  document.getElementById("tickerImage").classList.remove("hidden");
+
+  document.getElementById("tickerAnswerSection").style.display = "none";
+  document.getElementById("nextTickerBtn").classList.remove("hidden");
+};
+
+document.getElementById("nextTickerBtn").onclick = () => {
+      const img = document.getElementById("tickerImage");
+  img.src = "";
+  img.alt = ""; // 정답 이미지라는 텍스트 제거
+  img.classList.add("hidden");
+
+  const result = document.getElementById("tickerResult");
+  result.textContent = "";
+  currentTicker++;
+  if (currentTicker >= tickerProblems.length) {
+    alert("모든 문제를 풀었습니다!");
+    showScreen("category-screen");
+  } else {
+    loadTicker();
+  }
+};
+
+document.getElementById("backToCategoryBtnTicker").onclick = () =>{
+    // 정답 이미지 초기화
+  const img = document.getElementById("tickerImage");
+  img.src = "";
+  img.classList.add("hidden");
+
+  // 정답 메시지 초기화
+  document.getElementById("tickerResult").textContent = "";
+
+  // 입력창/버튼 초기화
+  document.getElementById("tickerAnswerInput").value = "";
+  document.getElementById("tickerAnswerSection").style.display = "block";
+  document.getElementById("nextTickerBtn").classList.add("hidden");
+
+  showScreen("category-screen");
+};
+
 /* Enter / ESC 키 공통 처리*/
 document.addEventListener("keydown", function (event) {
   const activeScreen = [...document.querySelectorAll(".screen")]
@@ -961,34 +1120,15 @@ document.addEventListener("keydown", function (event) {
 
   if (!activeScreen) return;
 
-/* ESC → 게임 화면이면 카테고리 / 카테고리면 메인 이동 */
-if (event.key === "Escape") {
-  const id = activeScreen.id;
-
-  // 게임 화면 → ESC → 카테고리
-  const gameScreens = [
-    "snack-game",
-    "scoville-game",
-    "animal-game",
-    "univ-game",
-    "font-game",
-    "game-screen"
-  ];
-
-  if (gameScreens.includes(id)) {
-    showScreen("category-screen");
+  /* ESC : 게임들 → 카테고리, 카테고리에서 ESC → 메인 */
+  if (event.key === "Escape") {
+    if (activeScreen.id === "category-screen") {
+      showScreen("main-screen");
+    } else {
+      showScreen("category-screen");
+    }
     return;
   }
-
-  // 카테고리 화면 → ESC → 메인
-  if (id === "category-screen") {
-    showScreen("main-screen");
-    return;
-  }
-
-  // 메인 화면에서는 ESC 없음
-  return;
-}
 
   if (event.key !== "Enter") return;
 
@@ -1041,6 +1181,15 @@ if (event.key === "Escape") {
     /* 숫자야구 */
     case "game-screen":
       document.getElementById("checkBtn").click();
+      break;
+
+    /* 티커 맞히기 */
+    case "ticker-game":
+      if (document.getElementById("nextTickerBtn").classList.contains("hidden")) {
+        document.getElementById("tickerCheckBtn").click();
+      } else {
+        document.getElementById("nextTickerBtn").click();
+      }
       break;
   }
 });
