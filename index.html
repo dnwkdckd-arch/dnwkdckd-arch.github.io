@@ -124,7 +124,8 @@
     /* 이미지 게임 공통 */
     #snack-game img,
     #animal-game img,
-    #univ-game img {
+    #univ-game img,
+    #scoville-game img {
       max-width: 450px;
       border-radius: 15px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -137,6 +138,10 @@
     .small {
       font-size: 0.9rem;
       color: #334155;
+    }
+    .info {
+      margin-top: 15px;
+      font-weight: bold;
     }
 
     /* 폰트 게임 */
@@ -156,29 +161,29 @@
       font-weight: 400;
     }
 
-/* 숫자야구 게임 */
-#game-screen h1 {
-  color: #2563eb;    /* 파란 제목 */
-}
+    /* 숫자야구 게임 */
+    #game-screen h1 {
+      color: #2563eb;
+    }
 
-#game-screen ul {
-  list-style: none;
-  padding: 0;
-  max-width: 300px;
-  margin: 20px auto;
-}
+    #game-screen ul {
+      list-style: none;
+      padding: 0;
+      max-width: 300px;
+      margin: 20px auto;
+    }
 
-#game-screen li {
-  margin: 8px 0;
-  padding: 8px;
-  background: #e2e8f0;    /* 연한 회색 박스 */
-  border-radius: 8px;
-}
+    #game-screen li {
+      margin: 8px 0;
+      padding: 8px;
+      background: #e2e8f0;
+      border-radius: 8px;
+    }
 
-#game-screen .info {
-  margin-top: 15px;
-  font-weight: bold;
-}
+    #game-screen .info {
+      margin-top: 15px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -229,11 +234,6 @@
     <div class="tooltip-container">
       <button>문화·예술·스포츠</button>
       <span class="tooltip">미술, 음악, 문학, 영화, 연극, 디자인, 스포츠</span>
-    </div>
-
-    <div class="tooltip-container">
-      <button>IT·기술</button>
-      <span class="tooltip">컴퓨터, 스마트폰, 인터넷 용어, AI, 프로그래밍</span>
     </div>
 
     <div class="tooltip-container">
@@ -310,6 +310,21 @@
   <button id="backToCategoryBtn2">⬅ 카테고리로 돌아가기</button>
 </div>
 
+<!-- 스코빌 맞히기 화면 -->
+<div id="scoville-game" class="screen">
+  <h1>스코빌 맞히기</h1>
+  <p class="small">가려진 이미지를 보고 스코빌 값을 숫자로 입력하세요.</p>
+  <img id="scovilleImage" src="" alt="문제 이미지" />
+  <img id="scovilleAnswerImage" src="" alt="정답 이미지" class="hidden" />
+  <div id="scovilleAnswerSection">
+    <input id="scovilleAnswerInput" type="text" placeholder="스코빌 값 입력 (숫자만)" />
+    <button id="scovilleCheckBtn">확인</button>
+  </div>
+  <p id="scovilleResult" class="info"></p>
+  <button id="nextScovilleBtn" class="hidden">다음 문제 ▶</button>
+  <button id="backToCategoryBtnScoville">⬅ 카테고리로 돌아가기</button>
+</div>
+
 <!-- 동물 맞히기 화면 -->
 <div id="animal-game" class="screen">
   <h1>동물 맞히기</h1>
@@ -326,17 +341,13 @@
 </div>
 
 <script>
-/* =============================
-   공통 화면 전환
-============================= */
+/* 공통 화면 전환 */
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(s => s.style.display = "none");
-  document.getElementById(id).style.display = id === "main-screen" ? "flex" : "block";
+  document.getElementById(id).style.display = (id === "main-screen") ? "flex" : "block";
 }
 
-/* =============================
-   섞기 함수
-============================= */
+/* 섞기 함수 */
 function shuffleArray(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -345,16 +356,12 @@ function shuffleArray(arr) {
   return arr;
 }
 
-/* =============================
-   메인/카테고리 버튼
-============================= */
+/* 메인/카테고리 버튼*/
 document.getElementById("categoryBtn").onclick = () => showScreen("category-screen");
 document.getElementById("backToMainBtn").onclick = () => showScreen("main-screen");
 document.getElementById("classicBtn").onclick = () => alert("클래식 모드는 준비 중입니다!");
 
-/* =============================
-   숫자 야구 게임
-============================= */
+/* 숫자 야구 게임 (수학·논리)*/
 let answer = [];
 let tries = 0;
 const maxTries = 6;
@@ -424,9 +431,7 @@ function play() {
 document.getElementById("backToCategoryBtn").onclick = () =>
   showScreen("category-screen");
 
-/* =============================
-   과자 맞히기
-============================= */
+/* 생활상식 : 과자 + 스코빌 랜덤 */
 const snackData = [
   { q: "images/ChocoSongi_q.JPG", a: "초코송이", reveal: "images/ChocoSongi_a.JPG" },
   { q: "images/pocachip_q.JPG", a: "포카칩오리지널", reveal: "images/pocachip_a.JPG" },
@@ -434,18 +439,53 @@ const snackData = [
   { q: "images/JjolbyeongMaekomhanMat_q.JPG", a: "쫄병매콤한맛", reveal: "images/JjolbyeongMaekomhanMat_a.JPG" }
 ];
 
-let snackProblems = [];
-let currentSnack = 0;
+const scovilleData = [
+  { type: "scoville", q: "images/scov/bibim.JPG", a: "700", reveal: "images/scov/bibim.JPG" },
+  { type: "scoville", q: "images/scov/buldagb.JPG", a: "4404", reveal: "images/scov/buldagb.JPG" },
+  { type: "scoville", q: "images/scov/chamchi.JPG", a: "1935", reveal: "images/scov/chamchi.JPG" },
+  { type: "scoville", q: "images/scov/Doritos.JPG", a: "2000", reveal: "images/scov/Doritos.JPG" },
+  { type: "scoville", q: "images/scov/Cheetos.JPG", a: "1500", reveal: "images/scov/Cheetos.JPG" },
+  { type: "scoville", q: "images/scov/ggarebo.JPG", a: "2400", reveal: "images/scov/ggarebo.JPG" },
+  { type: "scoville", q: "images/scov/jinla.JPG", a: "600", reveal: "images/scov/jinla.JPG" },
+  { type: "scoville", q: "images/scov/jjol.JPG", a: "2500", reveal: "images/scov/jjol.JPG" },
+  { type: "scoville", q: "images/scov/kingddu.JPG", a: "12000", reveal: "images/scov/kingddu.JPG" },
+  { type: "scoville", q: "images/scov/sinrameon.JPG", a: "3400", reveal: "images/scov/sinrameon.JPG" },
+  { type: "scoville", q: "images/scov/buldagk.JPG", a: "3200", reveal: "images/scov/buldagk.JPG" }
+];
+
+const lifestyleData = [
+  ...snackData.map(s => ({ type: "snack", ...s })),
+  ...scovilleData
+];
+
+let lifestyleProblems = [];
+let currentLifestyle = 0;
 
 document.getElementById("snackBtn").onclick = () => {
-  snackProblems = shuffleArray(snackData.slice());
-  currentSnack = 0;
-  showScreen("snack-game");
-  loadSnack();
+  lifestyleProblems = shuffleArray(lifestyleData.slice());
+  currentLifestyle = 0;
+  loadLifestyle();
 };
 
-function loadSnack() {
-  const p = snackProblems[currentSnack];
+function loadLifestyle() {
+  const p = lifestyleProblems[currentLifestyle];
+  if (!p) {
+    alert("문제가 없습니다.");
+    showScreen("category-screen");
+    return;
+  }
+
+  if (p.type === "scoville") {
+    showScreen("scoville-game");
+    loadScoville(p);
+  } else {
+    showScreen("snack-game");
+    loadSnack(p);
+  }
+}
+
+/* 과자 문제 로딩 */
+function loadSnack(p) {
   document.getElementById("snackImage").src = p.q;
   document.getElementById("answerImage").classList.add("hidden");
   document.getElementById("snackImage").classList.remove("hidden");
@@ -453,16 +493,24 @@ function loadSnack() {
   document.getElementById("answerInput").value = "";
   document.getElementById("answerSection").style.display = "block";
   document.getElementById("nextSnackBtn").classList.add("hidden");
+  document.getElementById("answerInput").focus();
 }
 
+/* 과자 정답 체크 */
 document.getElementById("snackCheckBtn").onclick = () => {
-  const p = snackProblems[currentSnack];
+  const p = lifestyleProblems[currentLifestyle];
+  if (!p || p.type !== "snack") return;
+
   const input = document.getElementById("answerInput").value.trim();
   const result = document.getElementById("snackResult");
 
-  if (!input) return alert("정답을 입력해주세요!");
+  if (!input) {
+    alert("정답을 입력해주세요!");
+    return;
+  }
 
   const normalize = t => t.replace(/\s/g, "").toLowerCase();
+
   if (normalize(input) === normalize(p.a)) {
     result.textContent = "맞았습니다!";
     result.style.color = "#16a34a";
@@ -479,22 +527,79 @@ document.getElementById("snackCheckBtn").onclick = () => {
   document.getElementById("nextSnackBtn").classList.remove("hidden");
 };
 
+/* 과자 다음 문제 */
 document.getElementById("nextSnackBtn").onclick = () => {
-  currentSnack++;
-  if (currentSnack >= snackProblems.length) {
-    alert("모든 과자 문제 완료!");
+  currentLifestyle++;
+  if (currentLifestyle >= lifestyleProblems.length) {
+    alert("모든 생활상식 문제를 풀었습니다!");
     showScreen("category-screen");
   } else {
-    loadSnack();
+    loadLifestyle();
   }
 };
 
 document.getElementById("backToCategoryBtn2").onclick = () =>
   showScreen("category-screen");
 
-/* =============================
-   동물 맞히기
-============================= */
+/* 스코빌 문제 로딩 */
+function loadScoville(p) {
+  document.getElementById("scovilleImage").src = p.q;
+  document.getElementById("scovilleAnswerImage").classList.add("hidden");
+  document.getElementById("scovilleImage").classList.remove("hidden");
+  document.getElementById("scovilleResult").textContent = "";
+  document.getElementById("scovilleAnswerInput").value = "";
+  document.getElementById("scovilleAnswerSection").style.display = "block";
+  document.getElementById("nextScovilleBtn").classList.add("hidden");
+  document.getElementById("scovilleAnswerInput").focus();
+}
+
+/* 스코빌 정답 체크 */
+document.getElementById("scovilleCheckBtn").onclick = () => {
+  const p = lifestyleProblems[currentLifestyle];
+  if (!p || p.type !== "scoville") return;
+
+  const inputEl = document.getElementById("scovilleAnswerInput");
+  const result = document.getElementById("scovilleResult");
+
+  let val = inputEl.value.trim().replace(/,/g, "");
+  if (!val) {
+    alert("스코빌 값을 입력해주세요!");
+    return;
+  }
+
+  const correct = String(p.a).replace(/,/g, "");
+
+  if (val === correct) {
+    result.textContent = "맞았습니다!";
+    result.style.color = "#16a34a";
+  } else {
+    result.textContent = `틀렸습니다! (정답: ${p.a})`;
+    result.style.color = "#dc2626";
+  }
+
+  document.getElementById("scovilleImage").classList.add("hidden");
+  document.getElementById("scovilleAnswerImage").src = p.reveal;
+  document.getElementById("scovilleAnswerImage").classList.remove("hidden");
+
+  document.getElementById("scovilleAnswerSection").style.display = "none";
+  document.getElementById("nextScovilleBtn").classList.remove("hidden");
+};
+
+/* 스코빌 다음 문제 */
+document.getElementById("nextScovilleBtn").onclick = () => {
+  currentLifestyle++;
+  if (currentLifestyle >= lifestyleProblems.length) {
+    alert("모든 생활상식 문제를 풀었습니다!");
+    showScreen("category-screen");
+  } else {
+    loadLifestyle();
+  }
+};
+
+document.getElementById("backToCategoryBtnScoville").onclick = () =>
+  showScreen("category-screen");
+
+/* 동물 맞히기*/
 const animalData = [
   { q: "images/anim/acau_q.JPG", a: "악어거북", reveal: "images/anim/acau_a.JPG" },
   { q: "images/anim/adeli_q.JPG", a: "아델리펭귄", reveal: "images/anim/adeli_a.JPG" },
@@ -613,7 +718,10 @@ document.getElementById("animalCheckBtn").onclick = () => {
   const input = document.getElementById("animalAnswerInput").value.trim();
   const result = document.getElementById("animalResult");
 
-  if (!input) return alert("정답을 입력해주세요!");
+  if (!input) {
+    alert("정답을 입력해주세요!");
+    return;
+  }
 
   const normalize = t => t.replace(/\s/g, "").toLowerCase();
 
@@ -646,9 +754,7 @@ document.getElementById("nextAnimalBtn").onclick = () => {
 document.getElementById("backToCategoryBtnAnimal").onclick = () =>
   showScreen("category-screen");
 
-/* =============================
-   대학교 맞히기 데이터
-============================= */
+/* 대학교 맞히기 데이터*/
 const univData = [
   { q: "images/school/buc_q.JPG", a: "부천대학교", alt: ["부천대"], reveal: "images/school/buc_a.JPG" },
   { q: "images/school/cau_q.JPG", a: "중앙대학교", alt: ["중앙대"], reveal: "images/school/cau_a.JPG" },
@@ -692,19 +798,16 @@ const univData = [
   { q: "images/school/sungk2_q.JPG", a: "성균관대학교",alt: ["성균관대","성대"], reveal: "images/school/sungk2_a.JPG" },
   { q: "images/school/y_q.JPG", a: "연세대학교",alt: ["연세대","연대"], reveal: "images/school/y_a.JPG" },
   { q: "images/school/y2_q.JPG", a: "연세대학교",alt: ["연세대","연대"], reveal: "images/school/y2_a.JPG" }
-
 ];
 
-/* =============================
-   창의·두뇌 퍼즐 (폰트 + 대학교 랜덤)
-============================= */
+/* 창의·두뇌 퍼즐 (폰트 + 대학교 랜덤) */
 const creativeBtn = document.getElementById("creativeBtn");
 
 let creativeProblems = [];
 let currentCreative = 0;
 let currentUnivProblem = null;
 
-/* 전체 문제 구성: 폰트 1 + 대학교 5 → 총 6개 */
+/* 전체 문제 구성: 폰트 1 + 모든 대학교 */
 const creativeData = [
   { type: "font" },
   ...univData.map(u => ({ type: "univ", ...u }))
@@ -739,9 +842,7 @@ function nextCreative() {
   loadCreative();
 }
 
-/* =============================
-   폰트 맞히기
-============================= */
+/* 폰트 맞히기 */
 let fontCorrectIndex = null;
 let fontSelectedIndex = null;
 
@@ -775,7 +876,10 @@ function startFontGame() {
 }
 
 document.getElementById("fontCheckBtn").onclick = () => {
-  if (fontSelectedIndex === null) return alert("글자를 선택하세요!");
+  if (fontSelectedIndex === null) {
+    alert("글자를 선택하세요!");
+    return;
+  }
 
   const msg = document.getElementById("fontGuessResult");
   const container = document.getElementById("lettersContainer");
@@ -795,9 +899,7 @@ document.getElementById("fontCheckBtn").onclick = () => {
 
 document.getElementById("nextFontBtn").onclick = nextCreative;
 
-/* =============================
-   대학교 맞히기
-============================= */
+/* 대학교 맞히기*/
 function loadUniv() {
   const p = currentUnivProblem;
   document.getElementById("univImage").src = p.q;
@@ -815,11 +917,17 @@ document.getElementById("univCheckBtn").onclick = () => {
   const input = document.getElementById("univAnswerInput").value.trim();
   const result = document.getElementById("univResult");
 
-  if (!input) return alert("정답을 입력하세요!");
+  if (!input) {
+    alert("정답을 입력하세요!");
+    return;
+  }
 
   const normalize = t => t.replace(/\s/g, "").toLowerCase();
+  const isCorrect =
+    normalize(input) === normalize(p.a) ||
+    (p.alt && p.alt.some(v => normalize(input) === normalize(v)));
 
-  if (normalize(input) === normalize(p.a)) {
+  if (isCorrect) {
     result.textContent = "맞았습니다!";
     result.style.color = "#16a34a";
   } else {
@@ -841,9 +949,101 @@ document.getElementById("nextUnivBtn").onclick = nextCreative;
 document.getElementById("backToCategoryBtnFont").onclick =
 document.getElementById("backToCategoryBtnUniv").onclick =
 document.getElementById("backToCategoryBtnAnimal").onclick =
-document.getElementById("backToCategoryBtn2").onclick = () => {
+document.getElementById("backToCategoryBtn2").onclick =
+document.getElementById("backToCategoryBtnScoville").onclick = () => {
   showScreen("category-screen");
 };
+
+/* Enter / ESC 키 공통 처리*/
+document.addEventListener("keydown", function (event) {
+  const activeScreen = [...document.querySelectorAll(".screen")]
+    .find(s => s.style.display !== "none");
+
+  if (!activeScreen) return;
+
+/* ESC → 게임 화면이면 카테고리 / 카테고리면 메인 이동 */
+if (event.key === "Escape") {
+  const id = activeScreen.id;
+
+  // 게임 화면 → ESC → 카테고리
+  const gameScreens = [
+    "snack-game",
+    "scoville-game",
+    "animal-game",
+    "univ-game",
+    "font-game",
+    "game-screen"
+  ];
+
+  if (gameScreens.includes(id)) {
+    showScreen("category-screen");
+    return;
+  }
+
+  // 카테고리 화면 → ESC → 메인
+  if (id === "category-screen") {
+    showScreen("main-screen");
+    return;
+  }
+
+  // 메인 화면에서는 ESC 없음
+  return;
+}
+
+  if (event.key !== "Enter") return;
+
+  switch (activeScreen.id) {
+    /* 과자 맞히기 */
+    case "snack-game":
+      if (document.getElementById("nextSnackBtn").classList.contains("hidden")) {
+        document.getElementById("snackCheckBtn").click();
+      } else {
+        document.getElementById("nextSnackBtn").click();
+      }
+      break;
+
+    /* 스코빌 게임 */
+    case "scoville-game":
+      if (document.getElementById("nextScovilleBtn").classList.contains("hidden")) {
+        document.getElementById("scovilleCheckBtn").click();
+      } else {
+        document.getElementById("nextScovilleBtn").click();
+      }
+      break;
+
+    /* 동물 맞히기 */
+    case "animal-game":
+      if (document.getElementById("nextAnimalBtn").classList.contains("hidden")) {
+        document.getElementById("animalCheckBtn").click();
+      } else {
+        document.getElementById("nextAnimalBtn").click();
+      }
+      break;
+
+    /* 대학교 맞히기 */
+    case "univ-game":
+      if (document.getElementById("nextUnivBtn").classList.contains("hidden")) {
+        document.getElementById("univCheckBtn").click();
+      } else {
+        document.getElementById("nextUnivBtn").click();
+      }
+      break;
+
+    /* 폰트 맞히기 */
+    case "font-game":
+      if (document.getElementById("nextFontBtn").classList.contains("hidden")) {
+        document.getElementById("fontCheckBtn").click();
+      } else {
+        document.getElementById("nextFontBtn").click();
+      }
+      break;
+
+    /* 숫자야구 */
+    case "game-screen":
+      document.getElementById("checkBtn").click();
+      break;
+  }
+});
 
 /* 초기 시작 화면 */
 showScreen("main-screen");
