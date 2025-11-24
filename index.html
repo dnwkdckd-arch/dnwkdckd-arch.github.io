@@ -951,7 +951,7 @@ document.getElementById("backToCategoryBtnTicker").onclick = () =>
 
 /* 신화 문제*/
 const mythData = [
-  { q: "대지의 여신 가이아의 신탁터였으며 세계의 배꼽(Omphalos)이라 불릴 정도로 신성한 땅 그리스 중부에 위치한 델포이를 수호한 괴물은?", 
+  { q: "대지의 여신 가이아의 신탁 터였으며 세계의 배꼽이라 불릴 정도로 신성한 땅이다.\n그리스 중부에 위치한 델포이를 수호한 괴물은?", 
     a: "피톤", reveal: "images/god/piton.JPG" },
 
   { q: "크로노스에게 잡아먹히지 않도록 레아가 몰래 숨긴 아기 제우스를 기른 존재는?", 
@@ -960,19 +960,19 @@ const mythData = [
   { q: "프로메테우스의 동생이며 최초의 여성이자 모든 선물을 받은 여자 판도라의 남편은?", 
     a: "에피메테우스", reveal: "images/god/epime.JPG" },
 
-  { q: "아르카디아의 왕이었으며 늑대인간 신화의 기원이며 제우스를 시험하기위해 인간의 고기로 요리한 자는?", 
+  { q: "아르카디아의 왕이었으며 늑대 인간 신화의 기원이며 제우스를 시험하기 위해 인간의 고기로 요리한 자는?", 
     a: "리카온", reveal: "images/god/lycaon.JPG" },
 
-  { q: "트로이 전쟁 후반의 분노·복수·영웅담을 그린 일리아스와 오디세우스가 트로이 전쟁 후 10년 동안 귀향하는 모험을 다룬 오디세이아를 남긴 고대 그리스의 전설적 시인은?", 
+  { q: "트로이 전쟁 후반의 분노·복수·영웅담을 그린 일리아스와 \n오디세우스가 트로이 전쟁 후 10년 동안 귀향하는 모험을 다룬 오디세이아를 남긴 고대 그리스의 전설적 시인은?", 
     a: "호메로스", reveal: "images/god/homer.JPG" },
 
-  { q: "헤스티아 데메테르 헤라 아테나 제우스 포세이돈 이 중 하데스의 형제 자매가 아닌 신은?", 
+  { q: "헤스티아 데메테르 헤라 아테나 제우스 포세이돈 이 중 하데스의 형제자매가 아닌 신은?", 
     a: "아테나", reveal: "images/god/athena.JPG" },
 
-  { q: "아킬레우스가 약점인 “발뒤꿈치”로 인해 죽게 되는 원인이 된 신 또는 인물은?", 
+  { q: "아킬레우스가 약점인 발뒤꿈치로 인해 죽게 되는 원인이 된 신 또는 인물은?", 
     a: "파리스", reveal: "images/god/paris.JPG" },
 
-  { q: "헤라클레스의 12과업 중 절대로 죽지 않는 불사성 괴물은?", 
+  { q: "헤라클레스의 12과업 중 절대로 죽지 않는 괴물의 머리를 자르고 오라고 했다 이 괴물은?", 
     a: "히드라", reveal: "images/god/hydra.JPG" },
 
   { q: "절름발이로 그리스 신들 중 유일하게 완전한 신체가 아닌 신은?", 
@@ -990,13 +990,13 @@ const mythData = [
   { q: "오시리스의 신체를 14조각으로 절단해 강에 던진 신은 누구인가?", 
     a: "세트", reveal: "images/god/seth.JPG" },
 
-  { q: "북유럽에서 오딘의 말 슬레이프니르의 부모는 매우 기괴하다. 슬레이프니르의 ‘어머니’는 누구인가?", 
+  { q: "오딘의 말 슬레이프니르의 부모는 매우 기괴하다고 알려져 있다. 슬레이프니르의 어머니는 누구인가?", 
     a: "로키", reveal: "images/god/loki.JPG" },
 
   { q: "메두사의 피에서 태어난 날개 달린 말은?", 
     a: "페가수스", reveal: "images/god/pegasus.JPG" },
 
-  { q: "불멸의 인간 우트나피쉬팀이 등장하는 “세상에서 가장 오래된 서사시”의 주인공 영웅은?", 
+  { q: "불멸의 인간 우트나피쉬팀이 등장하는 세상에서 가장 오래된 서사시의 주인공 영웅은?", 
     a: "길가메시", reveal: "images/god/gilga.JPG" },
 
   { q: "일본 신화에서 태양을 관장하며 가장 중요한 여신으로, 천황의 조상신으로 여겨지는 존재는?", 
@@ -1027,9 +1027,9 @@ document.getElementById("mythBtn").onclick = () => {
 
 function loadMyth() {
   const p = mythProblems[currentMyth];
-  document.getElementById("mythQuestion").textContent = p.q;
-  document.getElementById("mythResult").textContent = "";
+  document.getElementById("mythQuestion").innerHTML = p.q.replace(/\n/g, "<br>");
 
+  document.getElementById("mythResult").textContent = "";
   document.getElementById("mythAnswerInput").value = "";
   setTimeout(() => document.getElementById("mythAnswerInput").focus(), 0);
   document.getElementById("mythImage").classList.add("hidden");
